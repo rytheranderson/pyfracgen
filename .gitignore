@@ -1,0 +1,24 @@
+# Byte-compiled
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Packaging
+dist/
+build/
+
+# Testing
+.tox/
+.mypy_cache/
+htmlcov
+
+# Temp files
+.vscode/
+.DS_Store
+
+# pyenv
+.python-version
+
+# Convenience
+test_files*
+test_scripts*

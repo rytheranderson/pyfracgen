@@ -1,0 +1,98 @@
+[project]
+name = "pyfracgen"
+
+[tool.poetry]
+name = "pyfracgen"
+version = "0.0.10"
+description = "Python Fractal Generation is a package for generating aesthetic fractal images quickly and (hopefully) easily"
+authors = ["Ryther Anderson"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/rytheranderson/pyfracgen"
+include = [
+    "README.md",
+    "pyproject.toml",
+]
+packages = [
+  {include = "pyfracgen"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+matplotlib = "^3.7.1"
+numba = "^0.56.4"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+flake8 = "^4.0.1"
+flake8-docstrings = "^1.6.0"
+black = "^22.3.0"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.6.1"
+pre-commit = "^2.15.0"
+darglint = "^1.8.0"
+isort = "^5.12.0"
+tbump = "^6.9"
+mypy = "^1.2.0"
+tox = "^3.24.4"
+tox-poetry-installer = "^0.9.0"
+tox-gh-actions = "^2.8.1"
+
+[tool.black]
+line-length = 88
+experimental_string_processing = true
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.tbump.version]
+current = "0.0.10"
+
+regex = '''
+  (?P<major>\d+)
+  \.
+  (?P<minor>\d+)
+  \.
+  (?P<patch>\d+)
+  '''
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
+[[tool.tbump.file]]
+src = "pyproject.toml"
+search = 'current = "0.0.10"'
+
+[[tool.tbump.file]]
+src = "pyproject.toml"
+search = 'version = "0.0.10"'
+
+[[tool.tbump.file]]
+src = "pyfracgen/__init__.py"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+keywords = [
+    'fractals',
+    'Mandelbrot set',
+    'Julia set',
+    'Markus-Lyapunov fractal',
+    'random walk'
+]
