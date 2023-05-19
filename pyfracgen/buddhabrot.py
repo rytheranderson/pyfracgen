@@ -9,7 +9,7 @@ from numpy.random import random
 
 from pyfracgen.common import Canvas, Result
 from pyfracgen.mandelbrot import mandelbrot
-from pyfracgen.types import Array64, Bound, ComplexArray128, UpdateFunc
+from pyfracgen.types import Array64, ArrayComplex128, Bound, UpdateFunc
 
 
 @jit  # type: ignore[misc]
@@ -48,7 +48,7 @@ def _compute_cvals(
     boxes: tuple[Array64, Array64],
     energy_grid: Array64,
     importance_weight: float = 0.75,
-) -> ComplexArray128:
+) -> ArrayComplex128:
 
     nr = round(ncvals * (1 - importance_weight))
     cvals = []
@@ -139,9 +139,9 @@ class Buddhabrot(Canvas):
         ncvals: int,
         energy_grid: Array64,
         importance_weight: float = 0.75,
-    ) -> ComplexArray128:
+    ) -> ArrayComplex128:
 
-        cvals: ComplexArray128 = _compute_cvals(
+        cvals: ArrayComplex128 = _compute_cvals(
             ncvals,
             self.bounds,
             self.boxes,
