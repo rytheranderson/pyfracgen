@@ -52,7 +52,7 @@ def _compute_cvals(
     importance_weight: float = 0.75,
 ) -> ComplexArray128:
 
-    nr = int(round(ncvals * (1 - importance_weight)))
+    nr = round(ncvals * (1 - importance_weight))
     cvals = []
     (xmin, xmax), (ymin, ymax) = bounds
     # Randomly sampled starting points
@@ -62,7 +62,7 @@ def _compute_cvals(
 
     # Energy grid sampled starting points
     if importance_weight > 0.0:
-        ni = int(round(ncvals * importance_weight))
+        ni = round(ncvals * importance_weight)
         energy_grid = np.zeros((len(yvals), len(xvals)))
         _mandelbrot_paint(
             xvals,
@@ -88,6 +88,7 @@ def _compute_cvals(
                     + 1j * (ylo + (random(nsamples) * (yhi - ylo)))
                 )
                 cvals.extend(list(cs))
+    print(ni, nr)
     return np.array(cvals)
 
 
