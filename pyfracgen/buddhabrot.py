@@ -88,14 +88,12 @@ def _compute_cvals(
                     + 1j * (ylo + (random(nsamples) * (yhi - ylo)))
                 )
                 cvals.extend(list(cs))
-    print(f"Computed {len(cvals)}")
     return np.array(cvals)
 
 
 @jit  # type: ignore[misc]
 def _buddhabrot_paint(
-    xboxes: Array64,
-    yboxes: Array64,
+    boxes: tuple[Array64, Array64],
     lattice: Array64,
     update_func: UpdateFunc,
     cvals: Array64 | None = None,
@@ -105,6 +103,7 @@ def _buddhabrot_paint(
 
     if cvals is None:
         return
+    xboxes, yboxes = boxes
     for c in cvals:
         z = c
         trial_sequence = []
@@ -169,8 +168,7 @@ class Buddhabrot(Canvas):
     def paint(self, **kwargs: Any) -> None:
 
         _buddhabrot_paint(
-            self.boxes[0],
-            self.boxes[1],
+            self.boxes,
             self.lattice,
             **kwargs,
         )
