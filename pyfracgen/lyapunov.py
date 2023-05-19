@@ -4,14 +4,14 @@ import numpy as np
 from numba import jit
 
 from pyfracgen.result import Result
-from pyfracgen.types import ResultArray
+from pyfracgen.types import ResultArray, Bound
 
 
 @jit  # type: ignore[misc]
 def _lyapunov(
     string: str,
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
+    xbound: Bound,
+    ybound: Bound,
     n_init: int = 200,
     n_iter: int = 800,
     width: int = 3,
@@ -55,8 +55,8 @@ def _lyapunov(
 
 def lyapunov(
     string: str,
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
+    xbound: Bound,
+    ybound: Bound,
     n_init: int = 200,
     n_iter: int = 800,
     width: int = 3,

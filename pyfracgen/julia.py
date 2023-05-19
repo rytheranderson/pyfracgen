@@ -7,15 +7,15 @@ from numba import jit
 from numpy import log
 
 from pyfracgen.result import Result
-from pyfracgen.types import ResultArray
+from pyfracgen.types import ResultArray, Bound, UpdateFunc
 
 
 @jit  # type: ignore[misc]
 def _julia(
     c: float,
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
-    update_func: Callable[[complex, complex], complex],
+    xbound: Bound,
+    ybound: Bound,
+    update_func: UpdateFunc,
     width: int = 5,
     height: int = 5,
     dpi: int = 100,
@@ -55,9 +55,9 @@ def _julia(
 
 def julia_series(
     c_vals: Sequence[complex],
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
-    update_func: Callable[[complex, complex], complex],
+    xbound: Bound,
+    ybound: Bound,
+    update_func: UpdateFunc,
     width: int = 5,
     height: int = 5,
     dpi: int = 100,
@@ -88,9 +88,9 @@ def julia_series(
 
 def julia(
     c: float,
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
-    update_func: Callable[[complex, complex], complex],
+    xbound: Bound,
+    ybound: Bound,
+    update_func: UpdateFunc,
     width: int = 5,
     height: int = 5,
     dpi: int = 100,

@@ -7,14 +7,14 @@ from numba import jit
 from numpy import log
 
 from pyfracgen.result import Result
-from pyfracgen.types import ResultArray
+from pyfracgen.types import ResultArray, Bound, UpdateFunc
 
 
 @jit  # type: ignore[misc]
 def _mandelbrot(
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
-    update_func: Callable[[complex, complex], complex],
+    xbound: Bound,
+    ybound: Bound,
+    update_func: UpdateFunc,
     width: int = 5,
     height: int = 5,
     dpi: int = 100,
@@ -54,9 +54,9 @@ def _mandelbrot(
 
 
 def mandelbrot(
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
-    update_func: Callable[[float], float],
+    xbound: Bound,
+    ybound: Bound,
+    update_func: UpdateFunc,
     width: int = 5,
     height: int = 5,
     dpi: int = 100,

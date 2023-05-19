@@ -9,15 +9,15 @@ from numpy.random import random
 
 from pyfracgen.mandelbrot import _mandelbrot
 from pyfracgen.result import Result
-from pyfracgen.types import ResultArray
+from pyfracgen.types import ResultArray, Bound, UpdateFunc
 
 
 @jit  # type: ignore[misc]
 def compute_cvals(
     n_cvals: int,
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
-    update_func: Callable[[complex, complex], complex],
+    xbound: Bound,
+    ybound: Bound,
+    update_func: UpdateFunc,
     width: int = 5,
     height: int = 5,
     dpi: int = 100,
@@ -42,12 +42,12 @@ def compute_cvals(
     nr = int(round(n_cvals * (1 - importance_weight)))
     cvals = []
 
-    # randomly sampled starting points
-    for k in range(nr):
+    # Randomly sampled starting points
+    for _ in range(nr):
         c = xmin + (random() * (xmax - xmin)) + 1j * (ymin + (random() * (ymax - ymin)))
         cvals.append(c)
 
-    # energy grid sampled starting points
+    # Energy grid sampled starting points
     if importance_weight > 0.0:
         ni = int(round(n_cvals * importance_weight))
         energy_grid = _mandelbrot(
@@ -80,10 +80,10 @@ def compute_cvals(
 
 @jit  # type: ignore[misc]
 def _buddhabrot(
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
+    xbound: Bound,
+    ybound: Bound,
     cvals: npt.NDArray[np.float32],
-    update_func: Callable[[complex, complex], complex],
+    update_func: UpdateFunc,
     width: int = 5,
     height: int = 5,
     dpi: int = 100,
@@ -136,10 +136,10 @@ def _buddhabrot(
 
 
 def buddhabrot(
-    xbound: tuple[float, float],
-    ybound: tuple[float, float],
+    xbound: Bound,
+    ybound: Bound,
     cvals: npt.NDArray[np.float32],
-    update_func: Callable[[complex, complex], complex],
+    update_func: UpdateFunc,
     width: int = 5,
     height: int = 5,
     dpi: int = 100,
