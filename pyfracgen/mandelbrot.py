@@ -7,6 +7,7 @@ from numba import jit
 from numpy import log
 
 from pyfracgen.result import Result
+from pyfracgen.types import ResultArray
 
 
 @jit  # type: ignore[misc]
@@ -20,7 +21,7 @@ def _mandelbrot(
     maxiter: int = 100,
     horizon: float = 2.0**40,
     log_smooth: bool = True,
-) -> tuple[np.ndarray, int, int, int]:
+) -> tuple[ResultArray, int, int, int]:
 
     xmin, xmax = [float(xbound[0]), float(xbound[1])]
     ymin, ymax = [float(ybound[0]), float(ybound[1])]

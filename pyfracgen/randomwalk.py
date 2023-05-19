@@ -3,31 +3,37 @@ from __future__ import annotations
 from itertools import combinations
 
 import numpy as np
+import numpy.typing as npt
 from numba import jit
 from numpy import array
 from numpy.random import randint
 
 from pyfracgen.result import Result
+from pyfracgen.types import ResultArray
+
+MovesArray = npt.NDArray[np.int64]
 
 
-def construct_moves(basis: np.ndarray) -> np.ndarray:
+def construct_moves(basis: MovesArray) -> MovesArray:
 
     basis = np.r_[basis, -1 * basis, [array([0, 0, 0])]]
-    moves = np.unique(array([b0 + b1 for b0, b1 in combinations(basis, 2)]), axis=0)
+    moves: MovesArray = np.unique(
+        array([b0 + b1 for b0, b1 in combinations(basis, 2)]), axis=0
+    )
     moves = array([m for m in moves if np.any(m)])
     return moves
 
 
 @jit  # type: ignore[misc]
 def _randomwalk(
-    moves: np.ndarray,
+    moves: MovesArray,
     niter: int,
     width: int = 5,
     height: int = 5,
     depth: int = 1,
     dpi: int = 100,
     tracking: str = "visitation",
-) -> tuple[np.ndarray, int, int, int]:
+) -> tuple[ResultArray, int, int, int]:
 
     lattice = np.zeros(
         (int(height * dpi), int(width * dpi), int(depth)), dtype=np.float32
@@ -51,7 +57,7 @@ def _randomwalk(
 
 
 def randomwalk(
-    moves: np.ndarray,
+    moves: MovesArray,
     niter: int,
     width: int = 5,
     height: int = 5,

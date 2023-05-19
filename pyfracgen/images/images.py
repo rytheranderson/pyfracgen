@@ -5,7 +5,6 @@ import numpy as np
 from matplotlib import colors
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
-from numpy.ma import masked_where
 
 from pyfracgen.result import Result
 
@@ -66,10 +65,13 @@ def nebula_image(
     dpi = res_blue.dpi
     arr_green = res_green.image_array
     arr_red = res_red.image_array
-    arr_blue /= np.amax(arr_blue)
-    arr_green /= np.amax(arr_green)
-    arr_red /= np.amax(arr_red)
-    final = np.dstack((arr_red, arr_green, arr_blue))
+    final = np.dstack(
+        (
+            arr_red / np.amax(arr_red),
+            arr_green / np.amax(arr_green),
+            arr_blue / np.amax(arr_blue),
+        )
+    )
     w, h = plt.figaspect(arr_blue)
     fig, ax0 = plt.subplots(figsize=(w, h), dpi=dpi)
     fig.subplots_adjust(0, 0, 1, 1)
@@ -92,15 +94,18 @@ def markus_lyapunov_image(
     width = res.width_inches
     height = res.height_inches
     dpi = res.dpi
-    neg = masked_where(arr > 0.0, arr)
-    pos = masked_where(arr < 0.0, arr)
-    w, h = plt.figaspect(neg)
     fig, ax0 = plt.subplots(figsize=(width, height), dpi=dpi)
     ax0.imshow(
-        neg, cmap=cmap_negative, origin="lower", norm=colors.PowerNorm(gammas[0])
+        np.ma.masked_where(arr > 0.0, arr),  # type: ignore[no-untyped-call]
+        cmap=cmap_negative,
+        origin="lower",
+        norm=colors.PowerNorm(gammas[0]),
     )
     ax0.imshow(
-        pos, cmap=cmap_positive, origin="lower", norm=colors.PowerNorm(gammas[1])
+        np.ma.masked_where(arr < 0.0, arr),  # type: ignore[no-untyped-call]
+        cmap=cmap_positive,
+        origin="lower",
+        norm=colors.PowerNorm(gammas[1]),
     )
     fig.subplots_adjust(0, 0, 1, 1)
     plt.axis(ticks)
@@ -129,7 +134,7 @@ def randomwalk_image(
 
     for i in range(arr.shape[-1]):
         im = arr[..., i]
-        im = masked_where(im == 0, im)
+        im = np.ma.masked_where(im == 0, im)  # type: ignore[no-untyped-call]
         alpha = 1 - (i + 1) / max_ind
         alpha *= alpha_scale
         norm = colors.PowerNorm(gamma)

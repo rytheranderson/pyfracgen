@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Callable
+from typing import Callable, Sequence
 
 import numpy as np
 from numba import jit
 from numpy import log
 
 from pyfracgen.result import Result
+from pyfracgen.types import ResultArray
 
 
 @jit  # type: ignore[misc]
@@ -21,7 +22,7 @@ def _julia(
     maxiter: int = 100,
     horizon: float = 2.0**40,
     log_smooth: bool = True,
-) -> tuple[np.ndarray, int, int, int]:
+) -> tuple[ResultArray, int, int, int]:
 
     xmin, xmax = [float(xbound[0]), float(xbound[1])]
     ymin, ymax = [float(ybound[0]), float(ybound[1])]
@@ -53,7 +54,7 @@ def _julia(
 
 
 def julia_series(
-    c_vals: np.ndarray,
+    c_vals: Sequence[complex],
     xbound: tuple[float, float],
     ybound: tuple[float, float],
     update_func: Callable[[complex, complex], complex],

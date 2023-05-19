@@ -4,13 +4,13 @@ import pickle
 from dataclasses import dataclass
 from pathlib import Path
 
-import numpy as np
+from pyfracgen.types import ResultArray
 
 
 @dataclass
 class Result:
 
-    image_array: np.ndarray
+    image_array: ResultArray
     width_inches: int
     height_inches: int
     dpi: int

@@ -3,11 +3,13 @@ from __future__ import annotations
 from typing import Callable
 
 import numpy as np
+import numpy.typing as npt
 from numba import jit
 from numpy.random import random
 
 from pyfracgen.mandelbrot import _mandelbrot
 from pyfracgen.result import Result
+from pyfracgen.types import ResultArray
 
 
 @jit  # type: ignore[misc]
@@ -21,7 +23,7 @@ def compute_cvals(
     dpi: int = 100,
     importance_weight: float = 0.75,
     transpose_energy_grid: bool = False,
-) -> np.ndarray:
+) -> npt.NDArray[np.float32]:
 
     xmin, xmax = [float(xbound[0]), float(xbound[1])]
     ymin, ymax = [float(ybound[0]), float(ybound[1])]
@@ -80,14 +82,14 @@ def compute_cvals(
 def _buddhabrot(
     xbound: tuple[float, float],
     ybound: tuple[float, float],
-    cvals: np.ndarray,
+    cvals: npt.NDArray[np.float32],
     update_func: Callable[[complex, complex], complex],
     width: int = 5,
     height: int = 5,
     dpi: int = 100,
     maxiter: int = 100,
     horizon: float = 1.0e6,
-) -> tuple[np.ndarray, int, int, int]:
+) -> tuple[ResultArray, int, int, int]:
 
     xmin, xmax = [float(xbound[0]), float(xbound[1])]
     ymin, ymax = [float(ybound[0]), float(ybound[1])]
@@ -136,7 +138,7 @@ def _buddhabrot(
 def buddhabrot(
     xbound: tuple[float, float],
     ybound: tuple[float, float],
-    cvals: np.ndarray,
+    cvals: npt.NDArray[np.float32],
     update_func: Callable[[complex, complex], complex],
     width: int = 5,
     height: int = 5,
