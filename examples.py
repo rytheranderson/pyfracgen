@@ -67,7 +67,7 @@ def mandelbrot_example() -> None:
 def julia_animation_example() -> None:
 
     start_time = time.time()
-    c_vals = np.array([complex(i, 0.75) for i in np.linspace(0.05, 3.0, 100)])
+    c_vals = [complex(i, 0.75) for i in np.linspace(0.05, 3.0, 100)]
     s = pf.julia_series(
         c_vals,
         (-1, 1),
