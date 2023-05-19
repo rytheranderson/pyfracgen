@@ -3,8 +3,8 @@ from __future__ import annotations
 import numpy as np
 from numba import jit
 
-from pyfracgen.result import Result
-from pyfracgen.types import Bound, ResultArray
+from pyfracgen.common import Result
+from pyfracgen.types import Array64, Bound
 
 
 @jit  # type: ignore[misc]
@@ -17,7 +17,7 @@ def _lyapunov(
     width: int = 3,
     height: int = 3,
     dpi: int = 100,
-) -> tuple[ResultArray, int, int, int]:
+) -> tuple[Array64, int, int, int]:
 
     instructions = [0 if s == "A" else 1 for s in string]
     xmin, xmax = [float(xbound[0]), float(xbound[1])]

@@ -6,8 +6,8 @@ import numpy as np
 from numba import jit
 from numpy import log
 
-from pyfracgen.result import Result
-from pyfracgen.types import Bound, ResultArray, UpdateFunc
+from pyfracgen.common import Result
+from pyfracgen.types import Array64, Bound, UpdateFunc
 
 
 @jit  # type: ignore[misc]
@@ -22,7 +22,7 @@ def _julia(
     maxiter: int = 100,
     horizon: float = 2.0**40,
     log_smooth: bool = True,
-) -> tuple[ResultArray, int, int, int]:
+) -> tuple[Array64, int, int, int]:
 
     xmin, xmax = [float(xbound[0]), float(xbound[1])]
     ymin, ymax = [float(ybound[0]), float(ybound[1])]

@@ -1,19 +1,19 @@
 from __future__ import annotations
 
 import math
+from typing import Any, Iterator, Sequence
 
 import numpy as np
-import numpy.typing as npt
 from numba import jit
 from numpy.random import random
 
-from pyfracgen.mandelbrot import _mandelbrot
-from pyfracgen.result import Result
-from pyfracgen.types import Bound, ResultArray, UpdateFunc
+from pyfracgen.common import Canvas, Result
+from pyfracgen.mandelbrot import _mandelbrot_paint
+from pyfracgen.types import Array64, Bound, ComplexArray128, UpdateFunc
 
 
 @jit  # type: ignore[misc]
-def threshold_round_array(arr: ResultArray, threshold: float = 0.5) -> None:
+def threshold_round_array(arr: Array64, threshold: float = 0.5) -> None:
 
     w, h = arr.shape
     for i in range(w):
@@ -27,7 +27,7 @@ def threshold_round_array(arr: ResultArray, threshold: float = 0.5) -> None:
 
 
 @jit  # type: ignore[misc]
-def round_array_preserving_sum(arr: ResultArray) -> None:
+def round_array_preserving_sum(arr: Array64) -> None:
 
     target = arr.sum()
     best = (math.inf, 0.5)
@@ -42,34 +42,19 @@ def round_array_preserving_sum(arr: ResultArray) -> None:
 
 
 @jit  # type: ignore[misc]
-def compute_cvals(
-    n_cvals: int,
-    xbound: Bound,
-    ybound: Bound,
+def _compute_cvals(
+    ncvals: int,
     update_func: UpdateFunc,
-    width: int = 5,
-    height: int = 5,
-    dpi: int = 100,
+    bounds: tuple[Bound, Bound],
+    xvals: Sequence[float],
+    yvals: Sequence[float],
+    boxes: Array64,
     importance_weight: float = 0.75,
-) -> npt.NDArray[np.float32]:
+) -> ComplexArray128:
 
-    xmin, xmax = [float(xbound[0]), float(xbound[1])]
-    ymin, ymax = [float(ybound[0]), float(ybound[1])]
-    nx = width * dpi
-    ny = height * dpi
-    xvals = np.array(
-        [xmin + i * (xmax - xmin) / nx for i in range(nx)], dtype=np.float32
-    )
-    yvals = np.array(
-        [ymin + i * (ymax - ymin) / ny for i in range(ny)], dtype=np.float32
-    )
-    xboxs = [(xvals[i], xvals[i + 1]) for i in range(len(xvals) - 1)]
-    yboxs = [(yvals[i], yvals[i + 1]) for i in range(len(yvals) - 1)]
-    xboxs = xboxs + [(xboxs[-1][1], xmax)]
-    yboxs = yboxs + [(yboxs[-1][1], ymax)]
-    nr = int(round(n_cvals * (1 - importance_weight)))
+    nr = int(round(ncvals * (1 - importance_weight)))
     cvals = []
-
+    (xmin, xmax), (ymin, ymax) = bounds
     # Randomly sampled starting points
     for _ in range(nr):
         c = xmin + (random() * (xmax - xmin)) + 1j * (ymin + (random() * (ymax - ymin)))
@@ -77,64 +62,49 @@ def compute_cvals(
 
     # Energy grid sampled starting points
     if importance_weight > 0.0:
-        ni = int(round(n_cvals * importance_weight))
-        energy_grid = _mandelbrot(
-            xbound,
-            ybound,
+        ni = int(round(ncvals * importance_weight))
+        energy_grid = np.zeros((len(yvals), len(xvals)))
+        _mandelbrot_paint(
+            xvals,
+            yvals,
+            energy_grid,
             update_func,
-            width=width,
-            height=height,
-            dpi=dpi,
             maxiter=1000,
             horizon=2.5,
             log_smooth=False,
-        )[0].T
+        )
         energy_grid = (energy_grid / energy_grid.sum()) * ni
         round_array_preserving_sum(energy_grid)
-        for i in range(nx):
-            for j in range(ny):
-                xlo, xhi = xboxs[i]
-                ylo, yhi = yboxs[j]
-                nsamples = int(energy_grid[i, j])
+        xboxes, yboxes = boxes
+
+        for iy in range(len(yboxes)):
+            for ix in range(len(xboxes)):
+                ylo, yhi = yboxes[iy]
+                xlo, xhi = xboxes[ix]
+                nsamples = int(energy_grid[iy, ix])
                 cs = (
                     xlo
                     + (random(nsamples) * (xhi - xlo))
                     + 1j * (ylo + (random(nsamples) * (yhi - ylo)))
                 )
                 cvals.extend(list(cs))
-
+    print(f"Computed {len(cvals)}")
     return np.array(cvals)
 
 
 @jit  # type: ignore[misc]
-def _buddhabrot(
-    xbound: Bound,
-    ybound: Bound,
-    cvals: npt.NDArray[np.float32],
+def _buddhabrot_paint(
+    xboxes: Array64,
+    yboxes: Array64,
+    lattice: Array64,
     update_func: UpdateFunc,
-    width: int = 5,
-    height: int = 5,
-    dpi: int = 100,
+    cvals: Array64 | None = None,
     maxiter: int = 100,
     horizon: float = 1.0e6,
-) -> tuple[ResultArray, int, int, int]:
+) -> None:
 
-    xmin, xmax = [float(xbound[0]), float(xbound[1])]
-    ymin, ymax = [float(ybound[0]), float(ybound[1])]
-    nx = width * dpi
-    ny = height * dpi
-    xvals = np.array(
-        [xmin + i * (xmax - xmin) / nx for i in range(nx)], dtype=np.float32
-    )
-    yvals = np.array(
-        [ymin + i * (ymax - ymin) / ny for i in range(ny)], dtype=np.float32
-    )
-    xboxs = [(xvals[i], xvals[i + 1]) for i in range(len(xvals) - 1)]
-    yboxs = [(yvals[i], yvals[i + 1]) for i in range(len(yvals) - 1)]
-    xboxs = xboxs + [(xboxs[-1][1], xmax)]
-    yboxs = yboxs + [(yboxs[-1][1], ymax)]
-    lattice = np.zeros((int(width * dpi), int(height * dpi)), dtype=np.float32)
-
+    if cvals is None:
+        return
     for c in cvals:
         z = c
         trial_sequence = []
@@ -149,41 +119,83 @@ def _buddhabrot(
         for c in sequence:
             indx = 0
             indy = 0
-            for bx in range(nx):
-                if xboxs[bx][0] < c.real < xboxs[bx][1]:
+            for bx in range(len(xboxes)):
+                if xboxes[bx][0] < c.real < xboxes[bx][1]:
                     indx += bx
                     break
-            for by in range(ny):
-                if yboxs[by][0] < c.imag < yboxs[by][1]:
+            for by in range(len(yboxes)):
+                if yboxes[by][0] < c.imag < yboxes[by][1]:
                     indy += by
                     break
             if indx != 0 and indy != 0:
-                lattice[indx, indy] += 1
+                lattice[indy, indx] += 1
 
-    return (lattice.T, width, height, dpi)
+
+class Buddhabrot(Canvas):
+    @property
+    def boxes(self) -> tuple[Array64, Array64]:
+
+        xboxes = [
+            (self.xvals[ix], self.xvals[ix + 1]) for ix in range(len(self.xvals) - 1)
+        ]
+        yboxes = [
+            (self.yvals[ix], self.yvals[ix + 1]) for ix in range(len(self.yvals) - 1)
+        ]
+        *_, (_, lastx) = xboxes
+        *_, (_, lasty) = yboxes
+        (_, xmax), (_, ymax) = self.bounds
+        xboxes += [(lastx, xmax)]
+        yboxes += [(lasty, ymax)]
+        return np.array(xboxes), np.array(yboxes)
+
+    def compute_cvals(
+        self,
+        ncvals: int,
+        update_func: UpdateFunc,
+        importance_weight: float = 0.75,
+    ) -> ComplexArray128:
+
+        cvals: ComplexArray128 = _compute_cvals(
+            ncvals,
+            update_func,
+            self.bounds,
+            self.xvals,
+            self.yvals,
+            self.boxes,
+            importance_weight=importance_weight,
+        )
+        return cvals
+
+    def paint(self, **kwargs: Any) -> None:
+
+        _buddhabrot_paint(
+            self.boxes[0],
+            self.boxes[1],
+            self.lattice,
+            **kwargs,
+        )
 
 
 def buddhabrot(
     xbound: Bound,
     ybound: Bound,
-    cvals: npt.NDArray[np.float32],
+    ncvals: int,
     update_func: UpdateFunc,
     width: int = 5,
     height: int = 5,
     dpi: int = 100,
-    maxiter: int = 100,
+    maxiters: Sequence[int] = [100],
     horizon: float = 1.0e6,
-) -> Result:
+) -> Iterator[Result]:
 
-    res = _buddhabrot(
-        xbound,
-        ybound,
-        cvals,
-        update_func,
-        width=width,
-        height=height,
-        dpi=dpi,
-        maxiter=maxiter,
-        horizon=horizon,
-    )
-    return Result(*res)
+    canvases = {m: Buddhabrot(xbound, ybound, width, height, dpi) for m in maxiters}
+    (_, first), *_ = canvases.items()
+    cvals = first.compute_cvals(ncvals, update_func)
+    for maxiter, canvas in canvases.items():
+        canvas.paint(
+            cvals=cvals,
+            update_func=update_func,
+            maxiter=maxiter,
+            horizon=horizon,
+        )
+        yield canvas.result

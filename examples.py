@@ -119,24 +119,18 @@ def buddhabrot_example() -> None:  # this will take awhile
     start_time = time.time()
     xbound = (-1.75, 0.85)
     ybound = (-1.10, 1.10)
-    cvals = pf.compute_cvals(
-        1000000, xbound, ybound, pf.funcs.power, width=4, height=3, dpi=100
+    res = pf.buddhabrot(
+        xbound,
+        ybound,
+        100000,
+        pf.funcs.power,
+        horizon=1.0e6,
+        maxiters=[100, 1000, 10000],
+        width=5,
+        height=4,
+        dpi=300,
     )
-    results: list[pf.Result] = []
-    for maxiter in [100, 1000, 10000]:
-        res = pf.buddhabrot(
-            xbound,
-            ybound,
-            cvals,
-            pf.funcs.power,
-            horizon=1.0e6,
-            maxiter=maxiter,
-            width=5,
-            height=4,
-            dpi=300,
-        )
-        results.append(res)
-    pf.images.nebula_image(*results, gamma=0.4)  # type: ignore[arg-type, misc]
+    pf.images.nebula_image(*list(res), gamma=0.4)  # type: ignore[arg-type, misc]
     plt.savefig("example_images/buddhabrot_ex.png")
     print(f"calculation took {round((time.time() - start_time), 2)} seconds")
 

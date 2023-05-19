@@ -6,7 +6,7 @@ from matplotlib import colors
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from pyfracgen.result import Result
+from pyfracgen.common import Result
 
 
 def stack_cmaps(cmap: colors.Colormap, n_stacks: int) -> colors.LinearSegmentedColormap:
