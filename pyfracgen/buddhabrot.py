@@ -8,7 +8,7 @@ from numba import jit
 from numpy.random import random
 
 from pyfracgen.common import Canvas, Result
-from pyfracgen.mandelbrot import _mandelbrot_paint
+from pyfracgen.mandelbrot import mandelbrot
 from pyfracgen.types import Array64, Bound, ComplexArray128, UpdateFunc
 
 
@@ -44,11 +44,9 @@ def round_array_preserving_sum(arr: Array64) -> None:
 @jit  # type: ignore[misc]
 def _compute_cvals(
     ncvals: int,
-    update_func: UpdateFunc,
     bounds: tuple[Bound, Bound],
-    xvals: Sequence[float],
-    yvals: Sequence[float],
     boxes: tuple[Array64, Array64],
+    energy_grid: Array64,
     importance_weight: float = 0.75,
 ) -> ComplexArray128:
 
@@ -63,32 +61,20 @@ def _compute_cvals(
     # Energy grid sampled starting points
     if importance_weight > 0.0:
         ni = round(ncvals * importance_weight)
-        energy_grid = np.zeros((len(yvals), len(xvals)))
-        _mandelbrot_paint(
-            xvals,
-            yvals,
-            energy_grid,
-            update_func,
-            maxiter=1000,
-            horizon=2.5,
-            log_smooth=False,
-        )
         energy_grid = (energy_grid / energy_grid.sum()) * ni
         round_array_preserving_sum(energy_grid)
-        xboxes, yboxes = boxes
 
+        xboxes, yboxes = boxes
         for iy in range(len(yboxes)):
             for ix in range(len(xboxes)):
                 ylo, yhi = yboxes[iy]
                 xlo, xhi = xboxes[ix]
                 nsamples = int(energy_grid[iy, ix])
-                cs = (
-                    xlo
-                    + (random(nsamples) * (xhi - xlo))
-                    + 1j * (ylo + (random(nsamples) * (yhi - ylo)))
-                )
+                xadd = xlo + (random(nsamples) * (xhi - xlo))
+                yadd = ylo + (random(nsamples) * (yhi - ylo))
+                cs = xadd + 1j * yadd
                 cvals.extend(list(cs))
-    print(ni, nr)
+
     return np.array(cvals)
 
 
@@ -151,17 +137,15 @@ class Buddhabrot(Canvas):
     def compute_cvals(
         self,
         ncvals: int,
-        update_func: UpdateFunc,
+        energy_grid: Array64,
         importance_weight: float = 0.75,
     ) -> ComplexArray128:
 
         cvals: ComplexArray128 = _compute_cvals(
             ncvals,
-            update_func,
             self.bounds,
-            self.xvals,
-            self.yvals,
             self.boxes,
+            energy_grid,
             importance_weight=importance_weight,
         )
         return cvals
@@ -187,9 +171,20 @@ def buddhabrot(
     horizon: float = 1.0e6,
 ) -> Iterator[Result]:
 
+    mdbres = mandelbrot(
+        xbound=xbound,
+        ybound=ybound,
+        update_func=update_func,
+        width=width,
+        height=height,
+        dpi=dpi,
+        maxiter=500,
+        horizon=2.5,
+        log_smooth=False,
+    )
     canvases = {m: Buddhabrot(xbound, ybound, width, height, dpi) for m in maxiters}
     (_, first), *_ = canvases.items()
-    cvals = first.compute_cvals(ncvals, update_func)
+    cvals = first.compute_cvals(ncvals, mdbres.image_array)
     for maxiter, canvas in canvases.items():
         canvas.paint(
             cvals=cvals,
