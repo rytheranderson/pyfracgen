@@ -38,7 +38,7 @@ def _lyapunov(
             coord = [xvals[i], yvals[j]]
             n = 0
             x = 0.5
-            for _init in range(n_init):
+            for _ in range(n_init):
                 rn = coord[instructions[n % length]]
                 x = (rn * x) * (1 - x)
                 n += 1
