@@ -47,10 +47,10 @@ def _compute_cvals(
     bounds: tuple[Bound, Bound],
     boxes: tuple[Array64, Array64],
     energy_grid: Array64,
-    importance_weight: float = 0.75,
+    random_fraction: float = 0.25,
 ) -> ArrayComplex128:
 
-    nr = round(ncvals * (1 - importance_weight))
+    nr = round(ncvals * random_fraction)
     cvals = []
     (xmin, xmax), (ymin, ymax) = bounds
     # Randomly sampled starting points
@@ -59,8 +59,8 @@ def _compute_cvals(
         cvals.append(c)
 
     # Energy grid sampled starting points
-    if importance_weight > 0.0:
-        ni = round(ncvals * importance_weight)
+    if random_fraction < 1.0:
+        ni = round(ncvals * (1 - random_fraction))
         energy_grid = (energy_grid / energy_grid.sum()) * ni
         round_array_preserving_sum(energy_grid)
 
@@ -138,7 +138,7 @@ class Buddhabrot(Canvas):
         self,
         ncvals: int,
         energy_grid: Array64,
-        importance_weight: float = 0.75,
+        random_fraction: float = 0.25,
     ) -> ArrayComplex128:
 
         cvals: ArrayComplex128 = _compute_cvals(
@@ -146,7 +146,7 @@ class Buddhabrot(Canvas):
             self.bounds,
             self.boxes,
             energy_grid,
-            importance_weight=importance_weight,
+            random_fraction=random_fraction,
         )
         return cvals
 
@@ -169,6 +169,7 @@ def buddhabrot(
     dpi: int = 100,
     maxiters: Sequence[int] = [100],
     horizon: float = 1.0e6,
+    random_fraction: float = 0.25,
 ) -> Iterator[Result]:
 
     mdbres = mandelbrot(
@@ -184,7 +185,9 @@ def buddhabrot(
     )
     canvases = {m: Buddhabrot(xbound, ybound, width, height, dpi) for m in maxiters}
     (_, first), *_ = canvases.items()
-    cvals = first.compute_cvals(ncvals, mdbres.image_array)
+    cvals = first.compute_cvals(
+        ncvals, mdbres.image_array, random_fraction=random_fraction
+    )
     for maxiter, canvas in canvases.items():
         canvas.paint(
             cvals=cvals,
