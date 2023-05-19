@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Callable
-
 import numpy as np
 import numpy.typing as npt
 from numba import jit
@@ -9,7 +7,7 @@ from numpy.random import random
 
 from pyfracgen.mandelbrot import _mandelbrot
 from pyfracgen.result import Result
-from pyfracgen.types import ResultArray, Bound, UpdateFunc
+from pyfracgen.types import Bound, ResultArray, UpdateFunc
 
 
 @jit  # type: ignore[misc]

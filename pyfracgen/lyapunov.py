@@ -4,7 +4,7 @@ import numpy as np
 from numba import jit
 
 from pyfracgen.result import Result
-from pyfracgen.types import ResultArray, Bound
+from pyfracgen.types import Bound, ResultArray
 
 
 @jit  # type: ignore[misc]

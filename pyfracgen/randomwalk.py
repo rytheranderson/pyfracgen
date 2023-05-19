@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from itertools import combinations
+import itertools as itt
 
 import numpy as np
 import numpy.typing as npt
@@ -17,10 +17,12 @@ MovesArray = npt.NDArray[np.int64]
 def construct_moves(basis: MovesArray) -> MovesArray:
 
     basis = np.r_[basis, -1 * basis, [array([0, 0, 0])]]
-    moves: MovesArray = np.unique(
-        array([b0 + b1 for b0, b1 in combinations(basis, 2)]), axis=0
+    nonnull = list(
+        itt.filterfalse(
+            lambda x: not np.any(x), (b0 + b1 for b0, b1 in itt.combinations(basis, 2))
+        )
     )
-    moves = array([m for m in moves if np.any(m)])
+    moves: MovesArray = np.unique(nonnull, axis=0)
     return moves
 
 

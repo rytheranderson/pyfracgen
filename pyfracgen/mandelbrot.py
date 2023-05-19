@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from typing import Callable
-
 import numpy as np
 from numba import jit
 from numpy import log
 
 from pyfracgen.result import Result
-from pyfracgen.types import ResultArray, Bound, UpdateFunc
+from pyfracgen.types import Bound, ResultArray, UpdateFunc
 
 
 @jit  # type: ignore[misc]
