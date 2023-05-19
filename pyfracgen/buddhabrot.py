@@ -48,7 +48,7 @@ def _compute_cvals(
     bounds: tuple[Bound, Bound],
     xvals: Sequence[float],
     yvals: Sequence[float],
-    boxes: Array64,
+    boxes: tuple[Array64, Array64],
     importance_weight: float = 0.75,
 ) -> ComplexArray128:
 
