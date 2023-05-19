@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+
 import numpy as np
 import numpy.typing as npt
 from numba import jit
@@ -8,6 +10,35 @@ from numpy.random import random
 from pyfracgen.mandelbrot import _mandelbrot
 from pyfracgen.result import Result
 from pyfracgen.types import Bound, ResultArray, UpdateFunc
+
+
+@jit  # type: ignore[misc]
+def threshold_round_array(arr: ResultArray, threshold: float = 0.5) -> None:
+
+    w, h = arr.shape
+    for i in range(w):
+        for j in range(h):
+            current = arr[i, j]
+            if current - int(current) < threshold:
+                rounded = math.floor(current)
+            else:
+                rounded = math.ceil(current)
+            arr[i, j] = rounded
+
+
+@jit  # type: ignore[misc]
+def round_array_preserving_sum(arr: ResultArray) -> None:
+
+    target = arr.sum()
+    best = (math.inf, 0.5)
+    # Simply checking 100 values between 0 and 1 works well enough
+    for thresh in np.linspace(0, 1, 100):
+        check = arr.copy()
+        threshold_round_array(check, thresh)
+        dist = abs(check.sum() - target)
+        if dist < best[0]:
+            best = (dist, thresh)
+    threshold_round_array(arr, best[-1])
 
 
 @jit  # type: ignore[misc]
@@ -20,7 +51,6 @@ def compute_cvals(
     height: int = 5,
     dpi: int = 100,
     importance_weight: float = 0.75,
-    transpose_energy_grid: bool = False,
 ) -> npt.NDArray[np.float32]:
 
     xmin, xmax = [float(xbound[0]), float(xbound[1])]
@@ -60,16 +90,16 @@ def compute_cvals(
             log_smooth=False,
         )[0].T
         energy_grid = (energy_grid / energy_grid.sum()) * ni
-        energy_grid = energy_grid.T if transpose_energy_grid else energy_grid
+        round_array_preserving_sum(energy_grid)
         for i in range(nx):
             for j in range(ny):
-                num = int(round(energy_grid[i, j]))
                 xlo, xhi = xboxs[i]
                 ylo, yhi = yboxs[j]
+                nsamples = int(energy_grid[i, j])
                 cs = (
                     xlo
-                    + (random(num) * (xhi - xlo))
-                    + 1j * (ylo + (random(num) * (yhi - ylo)))
+                    + (random(nsamples) * (xhi - xlo))
+                    + 1j * (ylo + (random(nsamples) * (yhi - ylo)))
                 )
                 cvals.extend(list(cs))
 
