@@ -20,4 +20,4 @@ __all__ = [
     "Canvas",
     "funcs",
 ]
-__version__ = "0.0.10"
+__version__ = "0.0.11"

@@ -3,7 +3,7 @@ name = "pyfracgen"
 
 [tool.poetry]
 name = "pyfracgen"
-version = "0.0.10"
+version = "0.0.11"
 description = "Python Fractal Generation is a package for generating aesthetic fractal images quickly and (hopefully) easily"
 authors = ["Ryther Anderson"]
 readme = "README.md"
@@ -56,7 +56,7 @@ exclude = '''
 '''
 
 [tool.tbump.version]
-current = "0.0.10"
+current = "0.0.11"
 
 regex = '''
   (?P<major>\d+)
@@ -72,11 +72,11 @@ tag_template = "v{new_version}"
 
 [[tool.tbump.file]]
 src = "pyproject.toml"
-search = 'current = "0.0.10"'
+search = 'current = "0.0.11"'
 
 [[tool.tbump.file]]
 src = "pyproject.toml"
-search = 'version = "0.0.10"'
+search = 'version = "0.0.11"'
 
 [[tool.tbump.file]]
 src = "pyfracgen/__init__.py"
