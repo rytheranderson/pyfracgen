@@ -130,7 +130,7 @@ class Buddhabrot(CanvasBounded):
         energy_grid: Lattice,
         random_fraction: float = 0.25,
     ) -> ComplexSequence:
-        cvals = _compute_cvals(
+        cvals: ComplexSequence = _compute_cvals(
             ncvals,
             self.bounds,
             self.boxes,
