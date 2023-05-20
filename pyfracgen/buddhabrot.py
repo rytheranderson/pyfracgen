@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import math
-from typing import Any, Iterator, Sequence
+from typing import Iterator, Sequence
 
 import numpy as np
 from numba import jit
 from numpy.random import random
 
-from pyfracgen.common import Canvas, Result
+from pyfracgen.common import BoundedCanvas, Result
 from pyfracgen.mandelbrot import mandelbrot
 from pyfracgen.types import Array64, ArrayComplex128, Bound, UpdateFunc
+from pyfracgen.updaters.funcs import power
 
 
 @jit  # type: ignore[misc]
@@ -47,7 +48,7 @@ def _compute_cvals(
     bounds: tuple[Bound, Bound],
     boxes: tuple[Array64, Array64],
     energy_grid: Array64,
-    random_fraction: float = 0.25,
+    random_fraction: float,
 ) -> ArrayComplex128:
 
     nr = round(ncvals * random_fraction)
@@ -70,8 +71,8 @@ def _compute_cvals(
                 nsamples = int(energy_grid[iy, ix])
                 xadd = xlo + (random(nsamples) * (xhi - xlo))
                 yadd = ylo + (random(nsamples) * (yhi - ylo))
-                cs = xadd + 1j * yadd
-                cvals.extend(list(cs))
+                cvals.extend(xadd + 1j * yadd)
+
     return np.array(cvals)
 
 
@@ -81,8 +82,8 @@ def _buddhabrot_paint(
     lattice: Array64,
     update_func: UpdateFunc,
     cvals: Array64,
-    maxiter: int = 100,
-    horizon: float = 1.0e6,
+    maxiter: int,
+    horizon: float,
 ) -> None:
 
     (xmin, xmax), (ymin, ymax) = bounds
@@ -106,7 +107,7 @@ def _buddhabrot_paint(
             lattice[indy, indx] += 1
 
 
-class Buddhabrot(Canvas):
+class Buddhabrot(BoundedCanvas):
     @property
     def boxes(self) -> tuple[Array64, Array64]:
 
@@ -135,16 +136,25 @@ class Buddhabrot(Canvas):
             self.bounds,
             self.boxes,
             energy_grid,
-            random_fraction=random_fraction,
+            random_fraction,
         )
         return cvals
 
-    def paint(self, **kwargs: Any) -> None:
+    def paint(
+        self,
+        update_func: UpdateFunc,
+        cvals: ArrayComplex128,
+        maxiter: int,
+        horizon: float,
+    ) -> None:
 
         _buddhabrot_paint(
             self.bounds,
             self.lattice,
-            **kwargs,
+            update_func,
+            cvals,
+            maxiter,
+            horizon,
         )
 
 
@@ -152,11 +162,11 @@ def buddhabrot(
     xbound: Bound,
     ybound: Bound,
     ncvals: int,
-    update_func: UpdateFunc,
+    update_func: UpdateFunc = power,
     width: int = 5,
-    height: int = 5,
-    dpi: int = 100,
-    maxiters: Sequence[int] = [100],
+    height: int = 4,
+    dpi: int = 300,
+    maxiters: Sequence[int] = (100,),
     horizon: float = 1.0e6,
     random_fraction: float = 0.25,
 ) -> Iterator[Result]:
@@ -172,12 +182,12 @@ def buddhabrot(
         horizon=2.5,
         log_smooth=False,
     )
-    canvi = {m: Buddhabrot(xbound, ybound, width, height, dpi) for m in maxiters}
-    (_, first), *_ = canvi.items()
+    canvi = [(m, Buddhabrot(width, height, dpi, xbound, ybound)) for m in maxiters]
+    (_, first), *_ = canvi
     cvals = first.compute_cvals(
         ncvals, mdbres.image_array, random_fraction=random_fraction
     )
-    for maxiter, canvas in canvi.items():
+    for maxiter, canvas in canvi:
         canvas.paint(
             cvals=cvals,
             update_func=update_func,

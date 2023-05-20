@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Sequence
+from typing import Sequence
 
 from numba import jit
 from numpy import log
 
-from pyfracgen.common import Canvas, Result
+from pyfracgen.common import BoundedCanvas, Result
 from pyfracgen.types import Array64, Bound, UpdateFunc
+from pyfracgen.updaters.funcs import power
 
 
 @jit  # type: ignore[misc]
@@ -15,9 +16,9 @@ def _mandelbrot_paint(
     yvals: Sequence[float],
     lattice: Array64,
     update_func: UpdateFunc,
-    maxiter: int = 100,
-    horizon: float = 2.0**40,
-    log_smooth: bool = True,
+    maxiter: int,
+    horizon: float,
+    log_smooth: bool,
 ) -> None:
 
     logh = log(log(horizon)) / log(2)
@@ -36,30 +37,35 @@ def _mandelbrot_paint(
                 z = update_func(z, c)
 
 
-class Mandelbrot(Canvas):
-    def paint(self, **kwargs: Any) -> None:
+class Mandelbrot(BoundedCanvas):
+    def paint(
+        self, update_func: UpdateFunc, maxiter: int, horizon: float, log_smooth: bool
+    ) -> None:
 
         _mandelbrot_paint(
             self.xvals,
             self.yvals,
             self.lattice,
-            **kwargs,
+            update_func,
+            maxiter,
+            horizon,
+            log_smooth,
         )
 
 
 def mandelbrot(
     xbound: Bound,
     ybound: Bound,
-    update_func: UpdateFunc,
+    update_func: UpdateFunc = power,
     width: int = 5,
-    height: int = 5,
-    dpi: int = 100,
-    maxiter: int = 100,
+    height: int = 4,
+    dpi: int = 300,
+    maxiter: int = 1000,
     horizon: float = 2.0**40,
     log_smooth: bool = True,
 ) -> Result:
 
-    canvas = Mandelbrot(xbound, ybound, width, height, dpi)
+    canvas = Mandelbrot(width, height, dpi, xbound, ybound)
     canvas.paint(
         update_func=update_func, maxiter=maxiter, horizon=horizon, log_smooth=log_smooth
     )

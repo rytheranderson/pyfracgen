@@ -11,7 +11,7 @@ import numpy as np
 from pyfracgen.types import Array64, Bound
 
 
-@dataclass
+@dataclass(frozen=True)
 class Result:
 
     image_array: Array64
@@ -32,29 +32,36 @@ class Result:
 
 
 class Canvas:
-    def __init__(
-        self, xbound: Bound, ybound: Bound, width: int, height: int, dpi: int
-    ) -> None:
-
-        xmin, xmax = xbound
-        ymin, ymax = ybound
-        nx, ny = width * dpi, height * dpi
-
-        self.bounds = (xbound, ybound)
+    def __init__(self, width: int, height: int, dpi: int):
+        self.lattice: Array64 = np.zeros((height * dpi, width * dpi), dtype=np.float64)
         self.width = width
         self.height = height
         self.dpi = dpi
+
+    @property
+    def result(self) -> Result:
+        return Result(self.lattice, self.width, self.height, self.dpi)
+
+    def paint(self, *args: Any, **kwargs: Any) -> None:
+        raise NotImplementedError
+
+
+class BoundedCanvas(Canvas):
+    def __init__(
+        self, width: int, height: int, dpi: int, xbound: Bound, ybound: Bound
+    ) -> None:
+        super().__init__(width, height, dpi)
+        ny, nx = self.lattice.shape
+        self.xbound = xbound
+        self.ybound = ybound
+        (xmin, xmax), (ymin, ymax) = xbound, ybound
         self.xvals = np.array(
             [xmin + i * (xmax - xmin) / nx for i in range(nx)], dtype=np.float64
         )
         self.yvals = np.array(
             [ymin + i * (ymax - ymin) / ny for i in range(ny)], dtype=np.float64
         )
-        self.lattice: Array64 = np.zeros((ny, nx), dtype=np.float64)
 
     @property
-    def result(self) -> Result:
-        return Result(self.lattice, self.width, self.height, self.dpi)
-
-    def paint(self, **kwargs: Any) -> None:
-        raise NotImplementedError
+    def bounds(self) -> tuple[Bound, Bound]:
+        return (self.xbound, self.ybound)
