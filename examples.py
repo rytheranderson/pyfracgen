@@ -129,7 +129,7 @@ def buddhabrot_example() -> None:  # this will take awhile
         height=3,
         dpi=300,
     )
-    pf.images.nebula_image(tuple(res), gamma=0.4)  # type: ignore[arg-type]
+    pf.images.nebula_image(tuple(res), gamma=0.6)  # type: ignore[arg-type]
     plt.savefig("example_images/buddhabrot_ex.png")
     print(f"calculation took {round((time.time() - start_time), 2)} seconds")
 
