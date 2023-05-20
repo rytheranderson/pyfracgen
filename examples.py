@@ -122,7 +122,7 @@ def buddhabrot_example() -> None:  # this will take awhile
     res = pf.buddhabrot(
         xbound,
         ybound,
-        100000,
+        10000000,
         pf.funcs.power,
         horizon=1.0e6,
         maxiters=[100, 1000, 10000],
