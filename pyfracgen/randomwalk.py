@@ -44,11 +44,7 @@ def _randomwalk_paint(
 
 class RandomWalk(Canvas3D):
     def paint(self, moves: Array64, niter: int) -> None:
-        _randomwalk_paint(
-            self.lattice,
-            moves,
-            niter,
-        )
+        _randomwalk_paint(self.lattice, moves, niter)
 
 
 def randomwalk(
