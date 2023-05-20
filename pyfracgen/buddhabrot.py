@@ -7,7 +7,7 @@ import numpy as np
 from numba import jit
 from numpy.random import random
 
-from pyfracgen.common import BoundedCanvas, Result
+from pyfracgen.common import CanvasBounded, Result
 from pyfracgen.mandelbrot import mandelbrot
 from pyfracgen.types import Array64, ArrayComplex128, Bound, UpdateFunc
 from pyfracgen.updaters.funcs import power
@@ -107,7 +107,7 @@ def _buddhabrot_paint(
             lattice[indy, indx] += 1
 
 
-class Buddhabrot(BoundedCanvas):
+class Buddhabrot(CanvasBounded):
     @property
     def boxes(self) -> tuple[Array64, Array64]:
 

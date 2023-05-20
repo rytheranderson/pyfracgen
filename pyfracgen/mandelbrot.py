@@ -5,7 +5,7 @@ from typing import Sequence
 from numba import jit
 from numpy import log
 
-from pyfracgen.common import BoundedCanvas, Result
+from pyfracgen.common import CanvasBounded, Result
 from pyfracgen.types import Array64, Bound, UpdateFunc
 from pyfracgen.updaters.funcs import power
 
@@ -37,7 +37,7 @@ def _mandelbrot_paint(
                 z = update_func(z, c)
 
 
-class Mandelbrot(BoundedCanvas):
+class Mandelbrot(CanvasBounded):
     def paint(
         self, update_func: UpdateFunc, maxiter: int, horizon: float, log_smooth: bool
     ) -> None:

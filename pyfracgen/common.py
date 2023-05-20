@@ -46,7 +46,13 @@ class Canvas:
         raise NotImplementedError
 
 
-class BoundedCanvas(Canvas):
+class Canvas3D(Canvas):
+    def __init__(self, width: int, height: int, depth: int, dpi: int) -> None:
+        super().__init__(width, height, dpi)
+        self.lattice = np.dstack([np.zeros(self.lattice.shape) for _ in range(depth)])
+
+
+class CanvasBounded(Canvas):
     def __init__(
         self, width: int, height: int, dpi: int, xbound: Bound, ybound: Bound
     ) -> None:

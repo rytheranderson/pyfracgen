@@ -7,7 +7,7 @@ from numba import jit
 from numpy import array
 from numpy.random import randint
 
-from pyfracgen.common import Result
+from pyfracgen.common import Canvas3D, Result
 from pyfracgen.types import Array64
 
 
@@ -24,54 +24,42 @@ def construct_moves(basis: Array64) -> Array64:
 
 
 @jit  # type: ignore[misc]
-def _randomwalk(
+def _randomwalk_paint(
+    lattice: Array64,
     moves: Array64,
     niter: int,
-    width: int = 5,
-    height: int = 5,
-    depth: int = 1,
-    dpi: int = 100,
-    tracking: str = "visitation",
-) -> tuple[Array64, int, int, int]:
+) -> None:
 
-    lattice = np.zeros(
-        (int(height * dpi), int(width * dpi), int(depth)), dtype=np.float64
-    )
-    shape = array([height * dpi, width * dpi, depth])
     nmoves = len(moves)
-    l0, l1, l2 = shape
-    indices = array([height * dpi, width * dpi, depth]) / 2.0
-
+    h, w, d = lattice.shape
+    indices = array([h, w, d]) / 2.0
     for iteration in range(niter):
         move = moves[randint(0, nmoves)]
         indices += move
-        i, j, k = int(indices[0] % l0), int(indices[1] % l1), int(indices[2] % l2)
-        if tracking == "visitation":
-            lattice[i, j, k] += 1.0
-        elif tracking == "temporal":
-            lattice[i, j, k] = iteration
+        iy, ix, iz = int(indices[0] % h), int(indices[1] % w), int(indices[2] % d)
+        lattice[iy, ix, iz] = iteration
 
     lattice /= np.amax(lattice)
-    return (lattice, width, height, dpi)
+
+
+class RandomWalk(Canvas3D):
+    def paint(self, moves: Array64, niter: int) -> None:
+        _randomwalk_paint(
+            self.lattice,
+            moves,
+            niter,
+        )
 
 
 def randomwalk(
     moves: Array64,
     niter: int,
     width: int = 5,
-    height: int = 5,
+    height: int = 4,
     depth: int = 1,
-    dpi: int = 100,
-    tracking: str = "visitation",
+    dpi: int = 300,
 ) -> Result:
 
-    res = _randomwalk(
-        moves,
-        niter,
-        width=width,
-        height=height,
-        depth=depth,
-        dpi=dpi,
-        tracking=tracking,
-    )
-    return Result(*res)
+    canvas = RandomWalk(width, height, depth, dpi)
+    canvas.paint(moves, niter)
+    return canvas.result
