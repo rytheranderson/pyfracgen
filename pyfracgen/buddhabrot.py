@@ -80,7 +80,7 @@ def _compute_cvals(
 
 @jit  # type: ignore[misc]
 def _buddhabrot_paint(
-    boxes: tuple[Array64, Array64],
+    bounds: tuple[Bound, Bound],
     lattice: Array64,
     update_func: UpdateFunc,
     cvals: Array64 | None = None,
@@ -90,7 +90,8 @@ def _buddhabrot_paint(
 
     if cvals is None:
         return
-    xboxes, yboxes = boxes
+    (xmin, xmax), (ymin, ymax) = bounds
+    height, width = lattice.shape
     for c in cvals:
         z = c
         trial_sequence = []
@@ -103,16 +104,9 @@ def _buddhabrot_paint(
                 break
             z = update_func(z, c)
         for c in sequence:
-            indx, indy = 0, 0
-            for bx in range(len(xboxes)):
-                if xboxes[bx][0] < c.real < xboxes[bx][1]:
-                    indx += bx
-                    break
-            for by in range(len(yboxes)):
-                if yboxes[by][0] < c.imag < yboxes[by][1]:
-                    indy += by
-                    break
-            if indx == 0 or indy == 0:
+            indx = int((c.real - xmin) / (xmax - xmin) * width)
+            indy = int((c.imag - ymin) / (ymax - ymin) * height)
+            if (indx < 0 or indx >= width) or (indy < 0 or indy >= height):
                 continue
             lattice[indy, indx] += 1
 
@@ -153,7 +147,7 @@ class Buddhabrot(Canvas):
     def paint(self, **kwargs: Any) -> None:
 
         _buddhabrot_paint(
-            self.boxes,
+            self.bounds,
             self.lattice,
             **kwargs,
         )
