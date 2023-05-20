@@ -6,7 +6,7 @@ from numba import jit
 from numpy import log
 
 from pyfracgen.common import CanvasBounded, Result
-from pyfracgen.types import Array64, Bound, UpdateFunc
+from pyfracgen.types import Bound, Lattice, UpdateFunc
 from pyfracgen.updaters.funcs import power
 
 
@@ -15,7 +15,7 @@ def _julia_paint(
     c: float,
     xvals: Sequence[float],
     yvals: Sequence[float],
-    lattice: Array64,
+    lattice: Lattice,
     update_func: UpdateFunc,
     maxiter: int,
     horizon: float,

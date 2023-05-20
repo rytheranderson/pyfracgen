@@ -8,13 +8,13 @@ from typing import Any
 
 import numpy as np
 
-from pyfracgen.types import Array64, Bound
+from pyfracgen.types import Bound, Lattice, Lattice3D
 
 
 @dataclass(frozen=True)
 class Result:
 
-    image_array: Array64
+    image_array: Lattice
     width_inches: int
     height_inches: int
     dpi: int
@@ -33,7 +33,7 @@ class Result:
 
 class Canvas:
     def __init__(self, width: int, height: int, dpi: int):
-        self.lattice: Array64 = np.zeros((height * dpi, width * dpi), dtype=np.float64)
+        self.lattice: Lattice = np.zeros((height * dpi, width * dpi), dtype=np.float64)
         self.width = width
         self.height = height
         self.dpi = dpi
@@ -49,7 +49,9 @@ class Canvas:
 class Canvas3D(Canvas):
     def __init__(self, width: int, height: int, depth: int, dpi: int) -> None:
         super().__init__(width, height, dpi)
-        self.lattice = np.dstack([np.zeros(self.lattice.shape) for _ in range(depth)])
+        self.lattice: Lattice3D = np.dstack(
+            [np.zeros(self.lattice.shape) for _ in range(depth)]
+        )
 
 
 class CanvasBounded(Canvas):

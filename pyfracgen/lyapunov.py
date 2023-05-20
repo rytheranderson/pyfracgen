@@ -6,7 +6,7 @@ import numpy as np
 from numba import jit
 
 from pyfracgen.common import CanvasBounded, Result
-from pyfracgen.types import Array64, Bound
+from pyfracgen.types import Bound, Lattice
 
 
 @jit  # type: ignore[misc]
@@ -14,7 +14,7 @@ def _lyapunov_paint(
     string: str,
     xvals: Sequence[float],
     yvals: Sequence[float],
-    lattice: Array64,
+    lattice: Lattice,
     ninit: int,
     niter: int,
 ) -> None:

@@ -9,12 +9,12 @@ from numpy.random import random
 
 from pyfracgen.common import CanvasBounded, Result
 from pyfracgen.mandelbrot import mandelbrot
-from pyfracgen.types import Array64, ArrayComplex128, Bound, UpdateFunc
+from pyfracgen.types import Bound, Boxes, ComplexSequence, Lattice, UpdateFunc
 from pyfracgen.updaters.funcs import power
 
 
 @jit  # type: ignore[misc]
-def threshold_round_array(arr: Array64, threshold: float = 0.5) -> None:
+def threshold_round_array(arr: Lattice, threshold: float = 0.5) -> None:
 
     w, h = arr.shape
     for iy in range(w):
@@ -28,7 +28,7 @@ def threshold_round_array(arr: Array64, threshold: float = 0.5) -> None:
 
 
 @jit  # type: ignore[misc]
-def round_array_preserving_sum(arr: Array64) -> None:
+def round_array_preserving_sum(arr: Lattice) -> None:
 
     target = arr.sum()
     best = (math.inf, 0.5)
@@ -46,10 +46,10 @@ def round_array_preserving_sum(arr: Array64) -> None:
 def _compute_cvals(
     ncvals: int,
     bounds: tuple[Bound, Bound],
-    boxes: tuple[Array64, Array64],
-    energy_grid: Array64,
+    boxes: tuple[Boxes, Boxes],
+    energy_grid: Lattice,
     random_fraction: float,
-) -> ArrayComplex128:
+) -> ComplexSequence:
 
     nr = round(ncvals * random_fraction)
     cvals = []
@@ -79,8 +79,8 @@ def _compute_cvals(
 @jit  # type: ignore[misc]
 def _buddhabrot_paint(
     bounds: tuple[Bound, Bound],
-    lattice: Array64,
-    cvals: Array64,
+    lattice: Lattice,
+    cvals: ComplexSequence,
     update_func: UpdateFunc,
     maxiter: int,
     horizon: float,
@@ -109,7 +109,7 @@ def _buddhabrot_paint(
 
 class Buddhabrot(CanvasBounded):
     @property
-    def boxes(self) -> tuple[Array64, Array64]:
+    def boxes(self) -> tuple[Boxes, Boxes]:
 
         xboxes = [
             (self.xvals[ix], self.xvals[ix + 1]) for ix in range(len(self.xvals) - 1)
@@ -127,11 +127,10 @@ class Buddhabrot(CanvasBounded):
     def compute_cvals(
         self,
         ncvals: int,
-        energy_grid: Array64,
+        energy_grid: Lattice,
         random_fraction: float = 0.25,
-    ) -> ArrayComplex128:
-
-        cvals: ArrayComplex128 = _compute_cvals(
+    ) -> ComplexSequence:
+        cvals = _compute_cvals(
             ncvals,
             self.bounds,
             self.boxes,
@@ -142,7 +141,7 @@ class Buddhabrot(CanvasBounded):
 
     def paint(
         self,
-        cvals: ArrayComplex128,
+        cvals: ComplexSequence,
         update_func: UpdateFunc,
         maxiter: int,
         horizon: float,

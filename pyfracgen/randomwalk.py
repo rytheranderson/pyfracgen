@@ -8,10 +8,10 @@ from numpy import array
 from numpy.random import randint
 
 from pyfracgen.common import Canvas3D, Result
-from pyfracgen.types import Array64
+from pyfracgen.types import Lattice3D, Moves3D
 
 
-def construct_moves(basis: Array64) -> Array64:
+def construct_moves(basis: Moves3D) -> Moves3D:
 
     basis = np.r_[basis, -1 * basis, [array([0, 0, 0])]]
     nonnull = list(
@@ -19,14 +19,14 @@ def construct_moves(basis: Array64) -> Array64:
             lambda x: not np.any(x), (b0 + b1 for b0, b1 in itt.combinations(basis, 2))
         )
     )
-    moves: Array64 = np.unique(nonnull, axis=0)
+    moves: Moves3D = np.unique(nonnull, axis=0)
     return moves
 
 
 @jit  # type: ignore[misc]
 def _randomwalk_paint(
-    lattice: Array64,
-    moves: Array64,
+    lattice: Lattice3D,
+    moves: Moves3D,
     niter: int,
 ) -> None:
 
@@ -43,12 +43,12 @@ def _randomwalk_paint(
 
 
 class RandomWalk(Canvas3D):
-    def paint(self, moves: Array64, niter: int) -> None:
+    def paint(self, moves: Moves3D, niter: int) -> None:
         _randomwalk_paint(self.lattice, moves, niter)
 
 
 def randomwalk(
-    moves: Array64,
+    moves: Moves3D,
     niter: int,
     width: int = 5,
     height: int = 4,
