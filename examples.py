@@ -71,9 +71,9 @@ def julia_animation_example() -> None:
     cvals = (complex(i, 0.75) for i in np.linspace(0.05, 3.0, 100))
     series = pf.julia(
         cvals,
-        (-1, 1),
-        (-0.75, 1.25),
-        pf.funcs.magnetic_2,
+        xbound=(-1, 1),
+        ybound=(-0.75, 1.25),
+        update_func=pf.funcs.magnetic_2,
         maxiter=300,
         width=4,
         height=3,
