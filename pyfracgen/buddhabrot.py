@@ -16,14 +16,14 @@ from pyfracgen.types import Array64, ArrayComplex128, Bound, UpdateFunc
 def threshold_round_array(arr: Array64, threshold: float = 0.5) -> None:
 
     w, h = arr.shape
-    for i in range(w):
-        for j in range(h):
-            current = arr[i, j]
+    for iy in range(w):
+        for ix in range(h):
+            current = arr[iy, ix]
             if current - int(current) < threshold:
                 rounded = math.floor(current)
             else:
                 rounded = math.ceil(current)
-            arr[i, j] = rounded
+            arr[iy, ix] = rounded
 
 
 @jit  # type: ignore[misc]
@@ -65,16 +65,13 @@ def _compute_cvals(
         round_array_preserving_sum(energy_grid)
 
         xboxes, yboxes = boxes
-        for iy in range(len(yboxes)):
-            for ix in range(len(xboxes)):
-                ylo, yhi = yboxes[iy]
-                xlo, xhi = xboxes[ix]
+        for iy, (ylo, yhi) in enumerate(yboxes):
+            for ix, (xlo, xhi) in enumerate(xboxes):
                 nsamples = int(energy_grid[iy, ix])
                 xadd = xlo + (random(nsamples) * (xhi - xlo))
                 yadd = ylo + (random(nsamples) * (yhi - ylo))
                 cs = xadd + 1j * yadd
                 cvals.extend(list(cs))
-
     return np.array(cvals)
 
 

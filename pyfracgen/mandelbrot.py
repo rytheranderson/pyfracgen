@@ -21,17 +21,17 @@ def _mandelbrot_paint(
 ) -> None:
 
     logh = log(log(horizon)) / log(2)
-    for iy in range(len(yvals)):
-        for ix in range(len(xvals)):
-            c = xvals[ix] + 1j * yvals[iy]
+    for iy, yval in enumerate(yvals):
+        for ix, xval in enumerate(xvals):
+            c = xval + 1j * yval
             z = c
-            for iteration in range(maxiter):
+            for it in range(maxiter):
                 az = abs(z)
                 if az > horizon:
                     if log_smooth:
-                        lattice[iy, ix] = iteration - log(log(az)) / log(2) + logh
+                        lattice[iy, ix] = it - log(log(az)) / log(2) + logh
                     else:
-                        lattice[iy, ix] = iteration
+                        lattice[iy, ix] = it
                     break
                 z = update_func(z, c)
 
