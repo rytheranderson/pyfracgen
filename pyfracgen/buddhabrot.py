@@ -83,13 +83,11 @@ def _buddhabrot_paint(
     bounds: tuple[Bound, Bound],
     lattice: Array64,
     update_func: UpdateFunc,
-    cvals: Array64 | None = None,
+    cvals: Array64,
     maxiter: int = 100,
     horizon: float = 1.0e6,
 ) -> None:
 
-    if cvals is None:
-        return
     (xmin, xmax), (ymin, ymax) = bounds
     height, width = lattice.shape
     for c in cvals:
@@ -177,12 +175,12 @@ def buddhabrot(
         horizon=2.5,
         log_smooth=False,
     )
-    canvases = {m: Buddhabrot(xbound, ybound, width, height, dpi) for m in maxiters}
-    (_, first), *_ = canvases.items()
+    canvi = {m: Buddhabrot(xbound, ybound, width, height, dpi) for m in maxiters}
+    (_, first), *_ = canvi.items()
     cvals = first.compute_cvals(
         ncvals, mdbres.image_array, random_fraction=random_fraction
     )
-    for maxiter, canvas in canvases.items():
+    for maxiter, canvas in canvi.items():
         canvas.paint(
             cvals=cvals,
             update_func=update_func,
