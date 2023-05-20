@@ -4,8 +4,8 @@
 
 ## Description
 Python Fractal Generation is a package for making interesting/aesthetic fractal
-images somewhat quickly and (hopefully) easily. Many unique fractal images can
-be generated using only a few functions.
+images quickly (for Python) and (hopefully) easily. Many unique fractal images
+can be generated using only a few functions.
 ## Installation
 
 `pyfracgen` can currently be installed from the following sources (if you want
@@ -129,8 +129,6 @@ res = pf.buddhabrot(
 pf.images.nebula_image(tuple(res), gamma=0.4)  # type: ignore[arg-type]
 plt.savefig("example_images/buddhabrot_ex.png")
 ```
-
-### Status
 ## Fractal "Types" Supported
 * Mandelbrot
 * Julia
@@ -145,7 +143,7 @@ plt.savefig("example_images/buddhabrot_ex.png")
 * Function `randomwalk_image` for coloring 3D random walks with depth
 * Function `save_animation` for animating a sequence of results
 
-### More than Quadratic Polynomials
+## More than Quadratic Polynomials
 Mandelbrot, Julia, and Buddhabrot fractal images are almost always created by
 iterating the function $f_c(z) = z^2 + c$. Makes sense, since this function is
 part of the definition of the Mandelbrot set. However, you can iterate lots of
