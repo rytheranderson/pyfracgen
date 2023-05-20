@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterator, Sequence
+from typing import Iterable, Iterator, Sequence
 
 from numba import jit
 from numpy import log
@@ -60,7 +60,7 @@ class Julia(CanvasBounded):
 
 
 def julia(
-    cvals: Sequence[complex],
+    cvals: Iterable[complex],
     xbound: Bound,
     ybound: Bound,
     update_func: UpdateFunc = power,
