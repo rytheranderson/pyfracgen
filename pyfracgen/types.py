@@ -1,10 +1,18 @@
 from __future__ import annotations
 
-from typing import Callable, Tuple, Union
+from typing import Callable, NewType, Tuple
 
-import numpy as np
-import numpy.typing as npt
+from nptyping import Complex128, Float64, Int64, NDArray, Shape
 
-ResultArray = npt.NDArray[Union[np.float32, np.float64]]
+Width = NewType("Width", int)
+Height = NewType("Height", int)
+Depth = NewType("Depth", int)
+
+Lattice = NDArray[Shape["Height, Width"], Float64]
+Lattice3D = NDArray[Shape["Height, Width, Depth"], Float64]
+Moves3D = NDArray[Shape["*, 3"], Int64]
+Boxes = NDArray[Shape["*, 2"], Float64]
+ComplexSequence = NDArray[Shape["*"], Complex128]
+
 Bound = Tuple[float, float]
 UpdateFunc = Callable[[complex, complex], complex]

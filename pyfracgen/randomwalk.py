@@ -3,18 +3,15 @@ from __future__ import annotations
 import itertools as itt
 
 import numpy as np
-import numpy.typing as npt
 from numba import jit
 from numpy import array
 from numpy.random import randint
 
-from pyfracgen.result import Result
-from pyfracgen.types import ResultArray
-
-MovesArray = npt.NDArray[np.int64]
+from pyfracgen.common import Canvas3D, Result
+from pyfracgen.types import Lattice3D, Moves3D
 
 
-def construct_moves(basis: MovesArray) -> MovesArray:
+def construct_moves(basis: Moves3D) -> Moves3D:
 
     basis = np.r_[basis, -1 * basis, [array([0, 0, 0])]]
     nonnull = list(
@@ -22,59 +19,43 @@ def construct_moves(basis: MovesArray) -> MovesArray:
             lambda x: not np.any(x), (b0 + b1 for b0, b1 in itt.combinations(basis, 2))
         )
     )
-    moves: MovesArray = np.unique(nonnull, axis=0)
+    moves: Moves3D = np.unique(nonnull, axis=0)
     return moves
 
 
 @jit  # type: ignore[misc]
-def _randomwalk(
-    moves: MovesArray,
+def _randomwalk_paint(
+    lattice: Lattice3D,
+    moves: Moves3D,
     niter: int,
-    width: int = 5,
-    height: int = 5,
-    depth: int = 1,
-    dpi: int = 100,
-    tracking: str = "visitation",
-) -> tuple[ResultArray, int, int, int]:
+) -> None:
 
-    lattice = np.zeros(
-        (int(height * dpi), int(width * dpi), int(depth)), dtype=np.float32
-    )
-    shape = array([height * dpi, width * dpi, depth])
     nmoves = len(moves)
-    l0, l1, l2 = shape
-    indices = array([height * dpi, width * dpi, depth]) / 2.0
-
+    h, w, d = lattice.shape
+    indices = array([h, w, d]) / 2.0
     for iteration in range(niter):
         move = moves[randint(0, nmoves)]
         indices += move
-        i, j, k = int(indices[0] % l0), int(indices[1] % l1), int(indices[2] % l2)
-        if tracking == "visitation":
-            lattice[i, j, k] += 1.0
-        elif tracking == "temporal":
-            lattice[i, j, k] = iteration
+        iy, ix, iz = int(indices[0] % h), int(indices[1] % w), int(indices[2] % d)
+        lattice[iy, ix, iz] = iteration
 
     lattice /= np.amax(lattice)
-    return (lattice, width, height, dpi)
+
+
+class RandomWalk(Canvas3D):
+    def paint(self, moves: Moves3D, niter: int) -> None:
+        _randomwalk_paint(self.lattice, moves, niter)
 
 
 def randomwalk(
-    moves: MovesArray,
+    moves: Moves3D,
     niter: int,
     width: int = 5,
-    height: int = 5,
+    height: int = 4,
     depth: int = 1,
-    dpi: int = 100,
-    tracking: str = "visitation",
+    dpi: int = 300,
 ) -> Result:
 
-    res = _randomwalk(
-        moves,
-        niter,
-        width=width,
-        height=height,
-        depth=depth,
-        dpi=dpi,
-        tracking=tracking,
-    )
-    return Result(*res)
+    canvas = RandomWalk(width, height, depth, dpi)
+    canvas.paint(moves, niter)
+    return canvas.result

@@ -1,77 +1,70 @@
 from __future__ import annotations
 
-import numpy as np
+from typing import Sequence
+
 from numba import jit
 from numpy import log
 
-from pyfracgen.result import Result
-from pyfracgen.types import Bound, ResultArray, UpdateFunc
+from pyfracgen.common import CanvasBounded, Result
+from pyfracgen.types import Bound, Lattice, UpdateFunc
+from pyfracgen.updaters.funcs import power
 
 
 @jit  # type: ignore[misc]
-def _mandelbrot(
-    xbound: Bound,
-    ybound: Bound,
+def _mandelbrot_paint(
+    xvals: Sequence[float],
+    yvals: Sequence[float],
+    lattice: Lattice,
     update_func: UpdateFunc,
-    width: int = 5,
-    height: int = 5,
-    dpi: int = 100,
-    maxiter: int = 100,
-    horizon: float = 2.0**40,
-    log_smooth: bool = True,
-) -> tuple[ResultArray, int, int, int]:
+    maxiter: int,
+    horizon: float,
+    log_smooth: bool,
+) -> None:
 
-    xmin, xmax = [float(xbound[0]), float(xbound[1])]
-    ymin, ymax = [float(ybound[0]), float(ybound[1])]
-    nx = width * dpi
-    ny = height * dpi
-    xvals = np.array(
-        [xmin + i * (xmax - xmin) / nx for i in range(nx)], dtype=np.float64
-    )
-    yvals = np.array(
-        [ymin + i * (ymax - ymin) / ny for i in range(ny)], dtype=np.float64
-    )
-    lattice = np.zeros((int(nx), int(ny)), dtype=np.float64)
-    log_horizon = log(log(horizon)) / log(2)
-
-    for i in range(len(xvals)):
-        for j in range(len(yvals)):
-            c = xvals[i] + 1j * yvals[j]
+    logh = log(log(horizon)) / log(2)
+    for iy, yval in enumerate(yvals):
+        for ix, xval in enumerate(xvals):
+            c = xval + 1j * yval
             z = c
-            for iteration in range(maxiter):
+            for it in range(maxiter):
                 az = abs(z)
                 if az > horizon:
                     if log_smooth:
-                        lattice[i, j] = iteration - log(log(az)) / log(2) + log_horizon
+                        lattice[iy, ix] = it - log(log(az)) / log(2) + logh
                     else:
-                        lattice[i, j] = iteration
+                        lattice[iy, ix] = it
                     break
                 z = update_func(z, c)
 
-    return (lattice.T, width, height, dpi)
+
+class Mandelbrot(CanvasBounded):
+    def paint(
+        self, update_func: UpdateFunc, maxiter: int, horizon: float, log_smooth: bool
+    ) -> None:
+
+        _mandelbrot_paint(
+            self.xvals,
+            self.yvals,
+            self.lattice,
+            update_func,
+            maxiter,
+            horizon,
+            log_smooth,
+        )
 
 
 def mandelbrot(
     xbound: Bound,
     ybound: Bound,
-    update_func: UpdateFunc,
+    update_func: UpdateFunc = power,
     width: int = 5,
-    height: int = 5,
-    dpi: int = 100,
-    maxiter: int = 100,
+    height: int = 4,
+    dpi: int = 300,
+    maxiter: int = 1000,
     horizon: float = 2.0**40,
     log_smooth: bool = True,
 ) -> Result:
 
-    res = _mandelbrot(
-        xbound,
-        ybound,
-        update_func,
-        width=width,
-        height=height,
-        dpi=dpi,
-        maxiter=maxiter,
-        horizon=horizon,
-        log_smooth=log_smooth,
-    )
-    return Result(*res)
+    canvas = Mandelbrot(width, height, dpi, xbound, ybound)
+    canvas.paint(update_func, maxiter, horizon, log_smooth)
+    return canvas.result
