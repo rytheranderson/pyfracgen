@@ -103,8 +103,7 @@ def _buddhabrot_paint(
                 break
             z = update_func(z, c)
         for c in sequence:
-            indx = 0
-            indy = 0
+            indx, indy = 0, 0
             for bx in range(len(xboxes)):
                 if xboxes[bx][0] < c.real < xboxes[bx][1]:
                     indx += bx
@@ -113,8 +112,9 @@ def _buddhabrot_paint(
                 if yboxes[by][0] < c.imag < yboxes[by][1]:
                     indy += by
                     break
-            if indx != 0 and indy != 0:
-                lattice[indy, indx] += 1
+            if indx == 0 or indy == 0:
+                continue
+            lattice[indy, indx] += 1
 
 
 class Buddhabrot(Canvas):
