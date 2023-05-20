@@ -59,21 +59,23 @@ plt.savefig("example_images/mandelbrot_ex.png")
 Animation produced with this code:
 
 ```python
-cvals = (complex(i, 0.75) for i in np.linspace(0.05, 3.0, 100))
+import itertools as itt
+
+reals = itt.chain(np.linspace(-1, 2, 60)[0:-1],  np.linspace(2, 3, 40))
 series = pf.julia(
-    cvals,
+    (complex(real, 0.75) for real in reals),
     xbound=(-1, 1),
     ybound=(-0.75, 1.25),
     update_func=pf.funcs.magnetic_2,
     maxiter=300,
-    width=4,
-    height=3,
+    width=5,
+    height=4,
     dpi=200,
 )
 pf.images.save_animation(
     list(series),
-    cmap=plt.cm.gist_ncar,
-    gamma=0.9,
+    cmap=plt.cm.ocean,
+    gamma=0.6,
     file=Path("example_images/julia_animation_ex"),
 )
 ```
