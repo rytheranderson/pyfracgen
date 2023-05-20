@@ -1,7 +1,7 @@
 from .buddhabrot import buddhabrot
 from .common import Canvas, Result
 from .images import images
-from .julia import julia, julia_series
+from .julia import julia
 from .lyapunov import lyapunov
 from .mandelbrot import mandelbrot
 from .randomwalk import construct_moves, randomwalk

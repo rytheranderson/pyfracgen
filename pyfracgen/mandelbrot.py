@@ -66,7 +66,5 @@ def mandelbrot(
 ) -> Result:
 
     canvas = Mandelbrot(width, height, dpi, xbound, ybound)
-    canvas.paint(
-        update_func=update_func, maxiter=maxiter, horizon=horizon, log_smooth=log_smooth
-    )
+    canvas.paint(update_func, maxiter, horizon, log_smooth)
     return canvas.result

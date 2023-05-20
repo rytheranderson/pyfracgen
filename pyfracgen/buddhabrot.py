@@ -80,8 +80,8 @@ def _compute_cvals(
 def _buddhabrot_paint(
     bounds: tuple[Bound, Bound],
     lattice: Array64,
-    update_func: UpdateFunc,
     cvals: Array64,
+    update_func: UpdateFunc,
     maxiter: int,
     horizon: float,
 ) -> None:
@@ -142,8 +142,8 @@ class Buddhabrot(CanvasBounded):
 
     def paint(
         self,
-        update_func: UpdateFunc,
         cvals: ArrayComplex128,
+        update_func: UpdateFunc,
         maxiter: int,
         horizon: float,
     ) -> None:
@@ -151,8 +151,8 @@ class Buddhabrot(CanvasBounded):
         _buddhabrot_paint(
             self.bounds,
             self.lattice,
-            update_func,
             cvals,
+            update_func,
             maxiter,
             horizon,
         )
@@ -188,10 +188,5 @@ def buddhabrot(
         ncvals, mdbres.image_array, random_fraction=random_fraction
     )
     for maxiter, canvas in canvi:
-        canvas.paint(
-            cvals=cvals,
-            update_func=update_func,
-            maxiter=maxiter,
-            horizon=horizon,
-        )
+        canvas.paint(cvals, update_func, maxiter, horizon)
         yield canvas.result
