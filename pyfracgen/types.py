@@ -15,4 +15,4 @@ Boxes = NDArray[Shape["*, 2"], Float64]
 ComplexSequence = NDArray[Shape["*"], Complex128]
 
 Bound = Tuple[float, float]
-UpdateFunc = Callable[[complex, complex], complex]
+IterFunc = Callable[[complex, complex], complex]

@@ -8,9 +8,9 @@ from numba import jit
 from numpy.random import random
 
 from pyfracgen.common import CanvasBounded, Result
+from pyfracgen.iterfuncs.funcs import power
 from pyfracgen.mandelbrot import mandelbrot
-from pyfracgen.types import Bound, Boxes, ComplexSequence, Lattice, UpdateFunc
-from pyfracgen.updaters.funcs import power
+from pyfracgen.types import Bound, Boxes, ComplexSequence, IterFunc, Lattice
 
 
 @jit  # type: ignore[misc]
@@ -81,7 +81,7 @@ def _buddhabrot_paint(
     bounds: tuple[Bound, Bound],
     lattice: Lattice,
     cvals: ComplexSequence,
-    update_func: UpdateFunc,
+    update_func: IterFunc,
     maxiter: int,
     horizon: float,
 ) -> None:
@@ -142,7 +142,7 @@ class Buddhabrot(CanvasBounded):
     def paint(
         self,
         cvals: ComplexSequence,
-        update_func: UpdateFunc,
+        update_func: IterFunc,
         maxiter: int,
         horizon: float,
     ) -> None:
@@ -161,7 +161,7 @@ def buddhabrot(
     xbound: Bound,
     ybound: Bound,
     ncvals: int,
-    update_func: UpdateFunc = power,
+    update_func: IterFunc = power,
     width: int = 5,
     height: int = 4,
     dpi: int = 300,

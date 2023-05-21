@@ -6,8 +6,8 @@ from numba import jit
 from numpy import log
 
 from pyfracgen.common import CanvasBounded, Result
-from pyfracgen.types import Bound, Lattice, UpdateFunc
-from pyfracgen.updaters.funcs import power
+from pyfracgen.iterfuncs.funcs import power
+from pyfracgen.types import Bound, IterFunc, Lattice
 
 
 @jit  # type: ignore[misc]
@@ -15,7 +15,7 @@ def _mandelbrot_paint(
     xvals: Sequence[float],
     yvals: Sequence[float],
     lattice: Lattice,
-    update_func: UpdateFunc,
+    update_func: IterFunc,
     maxiter: int,
     horizon: float,
     log_smooth: bool,
@@ -39,7 +39,7 @@ def _mandelbrot_paint(
 
 class Mandelbrot(CanvasBounded):
     def paint(
-        self, update_func: UpdateFunc, maxiter: int, horizon: float, log_smooth: bool
+        self, update_func: IterFunc, maxiter: int, horizon: float, log_smooth: bool
     ) -> None:
 
         _mandelbrot_paint(
@@ -56,7 +56,7 @@ class Mandelbrot(CanvasBounded):
 def mandelbrot(
     xbound: Bound,
     ybound: Bound,
-    update_func: UpdateFunc = power,
+    update_func: IterFunc = power,
     width: int = 5,
     height: int = 4,
     dpi: int = 300,

@@ -34,21 +34,17 @@ def exponential(z: complex, c: complex) -> complex:
 
 @jit  # type: ignore[misc]
 def magnetic_1(z: complex, c: complex) -> complex:
-
     t0 = (z * z + c - 1) / (2 * z + c - 2)
     t1 = (z * z + c - 1) / (2 * z + c - 2)
-
     return t0 * t1
 
 
 @jit  # type: ignore[misc]
 def magnetic_2(z: complex, c: complex) -> complex:
-
     t0 = (z * z * z * 3 * (c - 1) * z + (c - 1) * (c - 2)) / (
         3 * z * z + 3 * (c - 2) * z + (c - 1) * (c - 2) + 1
     )
     t1 = (z * z * z * 3 * (c - 1) * z + (c - 1) * (c - 2)) / (
         3 * z * z + 3 * (c - 2) * z + (c - 1) * (c - 2) + 1
     )
-
     return t0 * t1
