@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from typing import Iterator, Sequence
+from typing import Iterable, Iterator
 
 import numpy as np
 from numba import jit
@@ -165,7 +165,7 @@ def buddhabrot(
     width: int = 5,
     height: int = 4,
     dpi: int = 300,
-    maxiters: Sequence[int] = (100,),
+    maxiters: Iterable[int] = (100,),
     horizon: float = 1.0e6,
     random_fraction: float = 0.25,
 ) -> Iterator[Result]:
