@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import itertools as itt
 import time
 from pathlib import Path
-import itertools as itt
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -69,7 +69,7 @@ def mandelbrot_example() -> None:
 def julia_animation_example() -> None:
 
     start_time = time.time()
-    reals = itt.chain(np.linspace(-1, 2, 60)[0:-1],  np.linspace(2, 3, 40))
+    reals = itt.chain(np.linspace(-1, 2, 60)[0:-1], np.linspace(2, 3, 40))
     series = pf.julia(
         (complex(real, 0.75) for real in reals),
         xbound=(-1, 1),
