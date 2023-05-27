@@ -24,7 +24,7 @@ def image(
     cmap: colors.Colormap = plt.cm.hot,
     ticks: bool = False,
     gamma: float = 0.3,
-    vert_exag: float = 0,
+    vert_exag: float = 0.0,
     ls: tuple[int, int] = (315, 10),
 ) -> tuple[Figure, plt.Axes]:
 
@@ -32,7 +32,7 @@ def image(
     fig, ax0 = plt.subplots(figsize=(w, h), dpi=res.dpi)
     fig.subplots_adjust(0, 0, 1, 1)
     norm = colors.PowerNorm(gamma)
-    if vert_exag != 0.0:
+    if vert_exag > 0.0:
         light = colors.LightSource(azdeg=ls[0], altdeg=ls[1])
         ls = light.shade(
             res.image_array, cmap=cmap, norm=norm, vert_exag=vert_exag, blend_mode="hsv"
