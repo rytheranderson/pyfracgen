@@ -10,6 +10,8 @@ import numpy as np
 
 from pyfracgen.types import Bound, Lattice, Lattice3D
 
+RESULT_DEFAULT_SAVE = Path("save.pickle")
+
 
 @dataclass(frozen=True)
 class Result:
@@ -25,7 +27,7 @@ class Result:
             res = pickle.load(f)
         return cls(*res)
 
-    def save(self, name: Path = Path("save")) -> None:
+    def save(self, name: Path = RESULT_DEFAULT_SAVE) -> None:
         res = [self.image_array, self.width_inches, self.height_inches, self.dpi]
         with open(name, "wb") as f:
             pickle.dump(res, f)

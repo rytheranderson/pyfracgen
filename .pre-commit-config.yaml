@@ -34,7 +34,7 @@ repos:
     rev: 4.0.1
     hooks:
     -   id: flake8
-        additional_dependencies: [darglint, flake8-docstrings]
+        additional_dependencies: [flake8-docstrings, flake8-bugbear]
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.3.0

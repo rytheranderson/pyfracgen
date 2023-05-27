@@ -11,6 +11,8 @@ from matplotlib.figure import Figure
 
 from pyfracgen.common import Result
 
+ANIMATION_DEFAULT_SAVE = Path("ani.gif")
+
 
 def get_stacked_cmap(cmap: colors.Colormap, nstacks: int) -> colors.Colormap:
 
@@ -133,7 +135,7 @@ def save_animation(
     cmap: int = plt.cm.hot,
     fps: int = 15,
     bitrate: int = 1800,
-    file: Path = Path("ani"),
+    file: Path = ANIMATION_DEFAULT_SAVE,
     ticks: bool = True,
     gamma: float = 0.3,
     vert_exag: float = 0,
