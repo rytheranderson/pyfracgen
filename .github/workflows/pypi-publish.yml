@@ -22,11 +22,11 @@ jobs:
       with:
         python-version: "3.x"
     - name: Load cached poetry install
-        id: cached-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.local
-          key: poetry-0
+      id: cached-poetry
+      uses: actions/cache@v3
+      with:
+        path: ~/.local
+        key: poetry-0
     - name: Install Poetry
       if: steps.cached-poetry.outputs.cache-hit != 'true'
       uses: snok/install-poetry@v1
