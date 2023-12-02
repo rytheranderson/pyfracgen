@@ -25,7 +25,9 @@ jobs:
       id: cached-poetry-deps
       uses: actions/cache@v3
       with:
-        path: .venv
+        path: |
+          .venv
+          .tox
         key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
     - name: Install dependencies
       if: steps.cached-poetry-deps.outputs.cache-hit != 'true'
