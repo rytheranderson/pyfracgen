@@ -17,7 +17,7 @@ git clone https://github.com/rytheranderson/pyfracgen.git
 poetry install
 ```
 
-### PyPi
+### PyPI
 ```bash
 pip install pyfracgen
 ```
