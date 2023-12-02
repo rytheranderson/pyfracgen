@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from cmath import cos, exp, sin
 
 from numba import jit

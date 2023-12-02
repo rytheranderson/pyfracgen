@@ -31,14 +31,14 @@ repos:
     -   id: rst-linter
 
 -   repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
+    rev: 6.1.0
     hooks:
     -   id: flake8
         additional_dependencies: [flake8-docstrings, flake8-bugbear]
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.3.0
+    rev: v1.7.1
     hooks:
     -   id: mypy
-        args: [--ignore-missing-imports, --strict, --show-error-code]
+        args: [--ignore-missing-imports, --strict, --show-error-codes]
         additional_dependencies: [gitpython, pytest, numpy]

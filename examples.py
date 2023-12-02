@@ -1,11 +1,10 @@
-from __future__ import annotations
-
 import argparse
 import itertools as itt
 import time
 from pathlib import Path
 
 import numpy as np
+from matplotlib import colormaps
 from matplotlib import pyplot as plt
 
 import pyfracgen as pf
@@ -60,7 +59,7 @@ def mandelbrot_example() -> None:
     res = pf.mandelbrot(
         xbound, ybound, pf.funcs.power, width=4, height=3, dpi=300, maxiter=5000
     )
-    stacked = pf.images.get_stacked_cmap(plt.cm.gist_gray, 50)
+    stacked = pf.images.get_stacked_cmap(colormaps["gist_gray"], 50)
     pf.images.image(res, cmap=stacked, gamma=0.8)
     plt.savefig("example_images/mandelbrot_ex.png")
     print(f"calculation took {round((time.time() - start_time), 2)} seconds")
@@ -82,7 +81,7 @@ def julia_animation_example() -> None:
     )
     pf.images.save_animation(
         list(series),
-        cmap=plt.cm.ocean,
+        cmap=colormaps["ocean"],
         gamma=0.6,
         file=Path("example_images/julia_animation_ex"),
     )
@@ -98,7 +97,9 @@ def lyapunov_example() -> None:
     res = pf.lyapunov(
         string, xbound, ybound, width=4, height=3, dpi=300, ninit=2000, niter=2000
     )
-    pf.images.markus_lyapunov_image(res, plt.cm.bone, plt.cm.bone_r, gammas=(8, 1))
+    pf.images.markus_lyapunov_image(
+        res, colormaps["bone"], colormaps["bone_r"], gammas=(8, 1)
+    )
     plt.savefig("example_images/lyapunov_ex.png")
     print(f"calculation took {round((time.time() - start_time), 2)} seconds")
 
@@ -109,7 +110,7 @@ def randomwalk_example() -> None:
     basis = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     moves = pf.construct_moves(basis)
     res = pf.randomwalk(moves, niter=5000000, width=4, height=3, depth=10, dpi=300)
-    pf.images.randomwalk_image(res, cmap=plt.cm.gist_yarg, gamma=1.0)
+    pf.images.randomwalk_image(res, cmap=colormaps["gist_yarg"], gamma=1.0)
     plt.savefig("example_images/randomwalk_ex.png")
     print(f"calculation took {round((time.time() - start_time), 2)} seconds")
 

@@ -1,17 +1,17 @@
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Sequence
 
 import matplotlib.animation as animation
 import numpy as np
-from matplotlib import colors
+from matplotlib import colormaps, colors
 from matplotlib import pyplot as plt
-from matplotlib.figure import Figure
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure, figaspect
 
 from pyfracgen.common import Result
 
 ANIMATION_DEFAULT_SAVE = Path("ani.gif")
+DEFAULT_COLORMAP = colormaps["hot"]
 
 
 def get_stacked_cmap(cmap: colors.Colormap, nstacks: int) -> colors.Colormap:
@@ -23,23 +23,22 @@ def get_stacked_cmap(cmap: colors.Colormap, nstacks: int) -> colors.Colormap:
 
 def image(
     res: Result,
-    cmap: colors.Colormap = plt.cm.hot,
+    cmap: colors.Colormap = DEFAULT_COLORMAP,
     ticks: bool = False,
     gamma: float = 0.3,
     vert_exag: float = 0.0,
     ls: tuple[int, int] = (315, 10),
-) -> tuple[Figure, plt.Axes]:
+) -> tuple[Figure, Axes]:
 
-    w, h = plt.figaspect(res.image_array)
-    fig, ax0 = plt.subplots(figsize=(w, h), dpi=res.dpi)
+    fig, ax0 = plt.subplots(figsize=figaspect(res.image_array), dpi=res.dpi)
     fig.subplots_adjust(0, 0, 1, 1)
     norm = colors.PowerNorm(gamma)
     if vert_exag > 0.0:
         light = colors.LightSource(azdeg=ls[0], altdeg=ls[1])
-        ls = light.shade(
+        shade = light.shade(
             res.image_array, cmap=cmap, norm=norm, vert_exag=vert_exag, blend_mode="hsv"
         )
-        ax0.imshow(ls, origin="lower")
+        ax0.imshow(shade, origin="lower")
     else:
         ax0.imshow(res.image_array, origin="lower", cmap=cmap, norm=norm)
     if not ticks:
@@ -53,11 +52,10 @@ def nebula_image(
     results: tuple[Result, Result, Result],
     ticks: bool = False,
     gamma: float = 1.0,
-) -> tuple[Figure, plt.Axes]:
+) -> tuple[Figure, Axes]:
 
     blue, green, red = results
-    w, h = plt.figaspect(blue.image_array)
-    fig, ax0 = plt.subplots(figsize=(w, h), dpi=blue.dpi)
+    fig, ax0 = plt.subplots(figsize=figaspect(blue.image_array), dpi=blue.dpi)
     fig.subplots_adjust(0, 0, 1, 1)
     arrays = [red.image_array, green.image_array, blue.image_array]
     final = np.dstack([arr / np.amax(arr) for arr in arrays])
@@ -75,10 +73,9 @@ def markus_lyapunov_image(
     cmap_pos: colors.Colormap,
     gammas: tuple[float, float] = (1.0, 1.0),
     ticks: bool = False,
-) -> tuple[Figure, plt.Axes]:
+) -> tuple[Figure, Axes]:
 
-    w, h = plt.figaspect(res.image_array)
-    fig, ax0 = plt.subplots(figsize=(w, h), dpi=res.dpi)
+    fig, ax0 = plt.subplots(figsize=figaspect(res.image_array), dpi=res.dpi)
     ax0.imshow(
         np.ma.masked_where(  # type: ignore[no-untyped-call]
             res.image_array > 0.0, res.image_array
@@ -105,14 +102,13 @@ def markus_lyapunov_image(
 
 def randomwalk_image(
     res: Result,
-    cmap: colors.Colormap = plt.cm.hot,
+    cmap: colors.Colormap = DEFAULT_COLORMAP,
     ticks: bool = False,
     gamma: float = 0.3,
     alpha_scale: float = 1.0,
-) -> tuple[Figure, plt.Axes]:
+) -> tuple[Figure, Axes]:
 
-    w, h = plt.figaspect(res.image_array[:, :, 0])
-    fig, ax0 = plt.subplots(figsize=(w, h), dpi=res.dpi)
+    fig, ax0 = plt.subplots(figsize=figaspect(res.image_array[:, :, 0]), dpi=res.dpi)
     max_ind = float(res.image_array.shape[-1] + 1)
     for i in range(res.image_array.shape[-1]):
         im = res.image_array[..., i]
@@ -132,7 +128,7 @@ def randomwalk_image(
 
 def save_animation(
     series: Sequence[Result],
-    cmap: int = plt.cm.hot,
+    cmap: colors.Colormap = DEFAULT_COLORMAP,
     fps: int = 15,
     bitrate: int = 1800,
     file: Path = ANIMATION_DEFAULT_SAVE,
@@ -157,10 +153,10 @@ def save_animation(
 
     ims = []
     for res in series:
-        ls = light.shade(
+        shade = light.shade(
             res.image_array, cmap=cmap, norm=norm, vert_exag=vert_exag, blend_mode="hsv"
         )
-        im = plt.imshow(ls, origin="lower", norm=norm)
+        im = plt.imshow(shade, origin="lower", norm=norm)
         ims.append([im])
 
     if file.suffix != ".gif":
