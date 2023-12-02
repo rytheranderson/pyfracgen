@@ -15,11 +15,10 @@ jobs:
     permissions:
       id-token: write
     if: |
+      github.event_name == 'workflow_run' &&
       startsWith(github.ref, 'refs/tags/') && 
       ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-    - name: Debug GitHub Ref
-      run: echo ${{ github.ref }}
     - uses: actions/checkout@v4
     - name: Set up Python
       uses: actions/setup-python@v4
