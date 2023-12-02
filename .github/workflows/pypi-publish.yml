@@ -19,7 +19,7 @@ jobs:
       ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
     - name: Debug GitHub Ref
-      run: echo "GitHub Ref: ${{ github.ref }}"
+      run: echo ${{ github.ref }}
     - uses: actions/checkout@v4
     - name: Set up Python
       uses: actions/setup-python@v4
