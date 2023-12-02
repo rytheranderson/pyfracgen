@@ -5,7 +5,7 @@ from typing import Sequence
 
 import matplotlib.animation as animation
 import numpy as np
-from matplotlib import cm, colors
+from matplotlib import colormaps, colors
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure, figaspect
@@ -13,7 +13,7 @@ from matplotlib.figure import Figure, figaspect
 from pyfracgen.common import Result
 
 ANIMATION_DEFAULT_SAVE = Path("ani.gif")
-DEFAULT_COLORMAP = cm.get_cmap("hot")
+DEFAULT_COLORMAP = colormaps["hot"]
 
 
 def get_stacked_cmap(cmap: colors.Colormap, nstacks: int) -> colors.Colormap:
