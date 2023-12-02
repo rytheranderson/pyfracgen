@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Callable, NewType, Tuple
 
 from nptyping import Complex128, Float64, Int64, NDArray, Shape
