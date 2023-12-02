@@ -15,9 +15,8 @@ jobs:
     permissions:
       id-token: write
     if: |
-      github.event_name == 'workflow_run' &&
-      startsWith(github.ref, 'refs/tags/') && 
-      ${{ github.event.workflow_run.conclusion == 'success' }}
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.ref, 'refs/tags/')
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
