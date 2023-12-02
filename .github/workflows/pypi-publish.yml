@@ -2,7 +2,7 @@ name: PyPI publish
 
 on:
   workflow_run:
-    workflows: [Test on push]
+    workflows: ['Test on push']
     types:
       - completed
 
