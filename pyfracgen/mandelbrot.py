@@ -18,7 +18,6 @@ def _mandelbrot_paint(
     horizon: float,
     log_smooth: bool,
 ) -> None:
-
     logh = log(log(horizon)) / log(2)
     for iy, yval in enumerate(yvals):
         for ix, xval in enumerate(xvals):
@@ -39,7 +38,6 @@ class Mandelbrot(CanvasBounded):
     def paint(
         self, update_func: IterFunc, maxiter: int, horizon: float, log_smooth: bool
     ) -> None:
-
         _mandelbrot_paint(
             self.xvals,
             self.yvals,
@@ -62,7 +60,6 @@ def mandelbrot(
     horizon: float = 2.0**40,
     log_smooth: bool = True,
 ) -> Result:
-
     canvas = Mandelbrot(width, height, dpi, xbound, ybound)
     canvas.paint(update_func, maxiter, horizon, log_smooth)
     return canvas.result

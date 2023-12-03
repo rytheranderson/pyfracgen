@@ -28,6 +28,7 @@ All the package functions can be accessed from a single import:
 ```
 import pyfracgen as pf
 from matplotlib import pyplot as plt
+from matplotlib import colormaps
 ```
 
 ### Mandelbrot Set
@@ -48,7 +49,7 @@ ybound = (
 res = pf.mandelbrot(
     xbound, ybound, pf.funcs.power, width=4, height=3, dpi=300, maxiter=5000
 )
-stacked = pf.images.get_stacked_cmap(plt.cm.gist_gray, 50)
+stacked = pf.images.get_stacked_cmap(colormaps["gist_gray"], 50)
 pf.images.image(res, cmap=stacked, gamma=0.8)
 plt.savefig("example_images/mandelbrot_ex.png")
 ```
@@ -74,7 +75,7 @@ series = pf.julia(
 )
 pf.images.save_animation(
     list(series),
-    cmap=plt.cm.ocean,
+    cmap=colormaps["ocean"],
     gamma=0.6,
     file=Path("example_images/julia_animation_ex"),
 )
@@ -92,7 +93,9 @@ ybound = (3.4, 4.0)
 res = pf.lyapunov(
     string, xbound, ybound, width=4, height=3, dpi=300, ninit=2000, niter=2000
 )
-pf.images.markus_lyapunov_image(res, plt.cm.bone, plt.cm.bone_r, gammas=(8, 1))
+pf.images.markus_lyapunov_image(
+    res, colormaps["bone"], colormaps["bone_r"], gammas=(8, 1)
+)
 plt.savefig("example_images/lyapunov_ex.png")
 ```
 
@@ -105,7 +108,7 @@ Image produced with this code:
 basis = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 moves = pf.construct_moves(basis)
 res = pf.randomwalk(moves, niter=5000000, width=4, height=3, depth=10, dpi=300)
-pf.images.randomwalk_image(res, cmap=plt.cm.gist_yarg, gamma=1.0)
+pf.images.randomwalk_image(res, cmap=colormaps["gist_yarg"], gamma=1.0)
 plt.savefig("example_images/randomwalk_ex.png")
 ```
 
@@ -149,5 +152,5 @@ plt.savefig("example_images/buddhabrot_ex.png")
 Mandelbrot, Julia, and Buddhabrot fractal images are almost always created by
 iterating the function $f_c(z) = z^2 + c$. Makes sense, since this function is
 part of the definition of the Mandelbrot set. However, you can iterate lots of
-other functions to produce similarly striking images: see the `updaters` module
+other functions to produce similarly striking images: see the `iterfuncs` module
 of `pyfracgen` for a few examples.

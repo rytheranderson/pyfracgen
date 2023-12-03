@@ -46,7 +46,6 @@ def parse_args() -> argparse.ArgumentParser:
 
 
 def mandelbrot_example() -> None:
-
     start_time = time.time()
     xbound = (
         0.3602404434376143632361252444495 - 0.00000000000003,
@@ -66,7 +65,6 @@ def mandelbrot_example() -> None:
 
 
 def julia_animation_example() -> None:
-
     start_time = time.time()
     reals = itt.chain(np.linspace(-1, 2, 60)[0:-1], np.linspace(2, 3, 40))
     series = pf.julia(
@@ -89,7 +87,6 @@ def julia_animation_example() -> None:
 
 
 def lyapunov_example() -> None:
-
     start_time = time.time()
     string = "AAAAAABBBBBB"
     xbound = (2.5, 3.4)
@@ -105,7 +102,6 @@ def lyapunov_example() -> None:
 
 
 def randomwalk_example() -> None:
-
     start_time = time.time()
     basis = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     moves = pf.construct_moves(basis)
@@ -116,7 +112,6 @@ def randomwalk_example() -> None:
 
 
 def buddhabrot_example() -> None:  # this will take awhile
-
     start_time = time.time()
     xbound = (-1.75, 0.85)
     ybound = (-1.10, 1.10)

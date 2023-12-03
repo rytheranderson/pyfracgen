@@ -16,7 +16,6 @@ def _lyapunov_paint(
     ninit: int,
     niter: int,
 ) -> None:
-
     instructions = [0 if s == "A" else 1 for s in string]
     length = len(instructions)
     for iy, yval in enumerate(yvals):
@@ -44,7 +43,6 @@ class Lyapunov(CanvasBounded):
         ninit: int,
         niter: int,
     ) -> None:
-
         _lyapunov_paint(string, self.xvals, self.yvals, self.lattice, ninit, niter)
 
 
@@ -58,7 +56,6 @@ def lyapunov(
     height: int = 4,
     dpi: int = 300,
 ) -> Result:
-
     canvas = Lyapunov(width, height, dpi, xbound, ybound)
     canvas.paint(string, ninit, niter)
     return canvas.result

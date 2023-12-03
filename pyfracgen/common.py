@@ -15,7 +15,6 @@ RESULT_DEFAULT_SAVE = Path("save.pickle")
 
 @dataclass(frozen=True)
 class Result:
-
     image_array: Lattice
     width_inches: int
     height_inches: int
