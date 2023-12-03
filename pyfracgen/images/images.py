@@ -72,23 +72,19 @@ def markus_lyapunov_image(
     ticks: bool = False,
 ) -> tuple[Figure, Axes]:
     fig, ax0 = plt.subplots(figsize=figaspect(res.image_array), dpi=res.dpi)
+    fig.subplots_adjust(0, 0, 1, 1)
     ax0.imshow(
-        np.ma.masked_where(  # type: ignore[no-untyped-call]
-            res.image_array > 0.0, res.image_array
-        ),
+        np.ma.masked_where(res.image_array > 0.0, res.image_array),  # type: ignore[no-untyped-call] # noqa: E501
         cmap=cmap_neg,
         origin="lower",
         norm=colors.PowerNorm(gammas[0]),
     )
     ax0.imshow(
-        np.ma.masked_where(  # type: ignore[no-untyped-call]
-            res.image_array < 0.0, res.image_array
-        ),
+        np.ma.masked_where(res.image_array < 0.0, res.image_array),  # type: ignore[no-untyped-call] # noqa: E501
         cmap=cmap_pos,
         origin="lower",
         norm=colors.PowerNorm(gammas[1]),
     )
-    fig.subplots_adjust(0, 0, 1, 1)
     if not ticks:
         plt.axis(ticks)
     fs = plt.gcf()
@@ -104,6 +100,7 @@ def randomwalk_image(
     alpha_scale: float = 1.0,
 ) -> tuple[Figure, Axes]:
     fig, ax0 = plt.subplots(figsize=figaspect(res.image_array[:, :, 0]), dpi=res.dpi)
+    fig.subplots_adjust(0, 0, 1, 1)
     max_ind = float(res.image_array.shape[-1] + 1)
     for i in range(res.image_array.shape[-1]):
         im = res.image_array[..., i]
@@ -113,7 +110,6 @@ def randomwalk_image(
         ax0.imshow(
             im, origin="lower", alpha=alpha, cmap=cmap, norm=norm, interpolation=None
         )
-    fig.subplots_adjust(0, 0, 1, 1)
     if not ticks:
         plt.axis(ticks)
     fs = plt.gcf()
