@@ -15,7 +15,6 @@ DEFAULT_COLORMAP = colormaps["hot"]
 
 
 def get_stacked_cmap(cmap: colors.Colormap, nstacks: int) -> colors.Colormap:
-
     cline = np.vstack([np.array(cmap(np.linspace(0, 1, 200))) for _ in range(nstacks)])
     mymap = colors.LinearSegmentedColormap.from_list("stacked", cline)
     return mymap
@@ -29,7 +28,6 @@ def image(
     vert_exag: float = 0.0,
     ls: tuple[int, int] = (315, 10),
 ) -> tuple[Figure, Axes]:
-
     fig, ax0 = plt.subplots(figsize=figaspect(res.image_array), dpi=res.dpi)
     fig.subplots_adjust(0, 0, 1, 1)
     norm = colors.PowerNorm(gamma)
@@ -53,7 +51,6 @@ def nebula_image(
     ticks: bool = False,
     gamma: float = 1.0,
 ) -> tuple[Figure, Axes]:
-
     blue, green, red = results
     fig, ax0 = plt.subplots(figsize=figaspect(blue.image_array), dpi=blue.dpi)
     fig.subplots_adjust(0, 0, 1, 1)
@@ -74,7 +71,6 @@ def markus_lyapunov_image(
     gammas: tuple[float, float] = (1.0, 1.0),
     ticks: bool = False,
 ) -> tuple[Figure, Axes]:
-
     fig, ax0 = plt.subplots(figsize=figaspect(res.image_array), dpi=res.dpi)
     ax0.imshow(
         np.ma.masked_where(  # type: ignore[no-untyped-call]
@@ -107,7 +103,6 @@ def randomwalk_image(
     gamma: float = 0.3,
     alpha_scale: float = 1.0,
 ) -> tuple[Figure, Axes]:
-
     fig, ax0 = plt.subplots(figsize=figaspect(res.image_array[:, :, 0]), dpi=res.dpi)
     max_ind = float(res.image_array.shape[-1] + 1)
     for i in range(res.image_array.shape[-1]):
@@ -137,7 +132,6 @@ def save_animation(
     vert_exag: float = 0,
     ls: tuple[int, int] = (315, 10),
 ) -> None:
-
     fig = plt.figure()
     fig.subplots_adjust(0, 0, 1, 1)
     if not ticks:

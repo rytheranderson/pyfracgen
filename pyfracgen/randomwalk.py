@@ -10,7 +10,6 @@ from pyfracgen.types import Lattice3D, Moves3D
 
 
 def construct_moves(basis: Moves3D) -> Moves3D:
-
     basis = np.r_[basis, -1 * basis, [array([0, 0, 0])]]
     nonnull = list(
         itt.filterfalse(
@@ -27,7 +26,6 @@ def _randomwalk_paint(
     moves: Moves3D,
     niter: int,
 ) -> None:
-
     nmoves = len(moves)
     h, w, d = lattice.shape
     indices = array([h, w, d]) / 2.0
@@ -53,7 +51,6 @@ def randomwalk(
     depth: int = 1,
     dpi: int = 300,
 ) -> Result:
-
     canvas = RandomWalk(width, height, depth, dpi)
     canvas.paint(moves, niter)
     return canvas.result

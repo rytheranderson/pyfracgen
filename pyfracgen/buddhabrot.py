@@ -13,7 +13,6 @@ from pyfracgen.types import Bound, Boxes, ComplexSequence, IterFunc, Lattice
 
 @jit  # type: ignore[misc]
 def threshold_round_array(arr: Lattice, threshold: float = 0.5) -> None:
-
     w, h = arr.shape
     for iy in range(w):
         for ix in range(h):
@@ -27,7 +26,6 @@ def threshold_round_array(arr: Lattice, threshold: float = 0.5) -> None:
 
 @jit  # type: ignore[misc]
 def round_array_preserving_sum(arr: Lattice) -> None:
-
     target = arr.sum()
     best = (math.inf, 0.5)
     # Simply checking 100 values between 0 and 1 works well enough
@@ -48,7 +46,6 @@ def _compute_cvals(
     energy_grid: Lattice,
     random_fraction: float,
 ) -> ComplexSequence:
-
     nr = round(ncvals * random_fraction)
     cvals = []
     (xmin, xmax), (ymin, ymax) = bounds
@@ -83,7 +80,6 @@ def _buddhabrot_paint(
     maxiter: int,
     horizon: float,
 ) -> None:
-
     (xmin, xmax), (ymin, ymax) = bounds
     height, width = lattice.shape
     for c in cvals:
@@ -108,7 +104,6 @@ def _buddhabrot_paint(
 class Buddhabrot(CanvasBounded):
     @property
     def boxes(self) -> tuple[Boxes, Boxes]:
-
         xboxes = [
             (self.xvals[ix], self.xvals[ix + 1]) for ix in range(len(self.xvals) - 1)
         ]
@@ -144,7 +139,6 @@ class Buddhabrot(CanvasBounded):
         maxiter: int,
         horizon: float,
     ) -> None:
-
         _buddhabrot_paint(
             self.bounds,
             self.lattice,
@@ -167,7 +161,6 @@ def buddhabrot(
     horizon: float = 1.0e6,
     random_fraction: float = 0.25,
 ) -> Iterator[Result]:
-
     mdbres = mandelbrot(
         xbound=xbound,
         ybound=ybound,

@@ -19,7 +19,6 @@ def _julia_paint(
     horizon: float,
     log_smooth: bool,
 ) -> None:
-
     logh = log(log(horizon)) / log(2)
     for iy, yval in enumerate(yvals):
         for ix, xval in enumerate(xvals):
@@ -44,7 +43,6 @@ class Julia(CanvasBounded):
         horizon: float,
         log_smooth: bool,
     ) -> None:
-
         _julia_paint(
             c,
             self.xvals,
@@ -69,7 +67,6 @@ def julia(
     horizon: float = 2.0**40,
     log_smooth: bool = True,
 ) -> Iterator[Result]:
-
     for c in cvals:
         canvas = Julia(width, height, dpi, xbound, ybound)
         canvas.paint(c, update_func, maxiter, horizon, log_smooth)
