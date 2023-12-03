@@ -46,7 +46,7 @@ def _compute_cvals(
     energy_grid: Lattice,
     random_fraction: float,
 ) -> ComplexSequence:
-    cvals: ComplexSequence = []
+    cvals = []
     (xmin, xmax), (ymin, ymax) = bounds
     # Randomly sampled starting points
     for _ in range(round(ncvals * random_fraction)):
