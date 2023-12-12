@@ -4,6 +4,7 @@ updates:
   directory: "/"
   schedule:
     interval: "monthly"
+  insecure-external-code-execution: allow
   groups:
     python-packages:
       patterns:
