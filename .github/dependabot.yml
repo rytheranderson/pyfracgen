@@ -1,11 +1,11 @@
 version: 2
 updates:
-- package-ecosystem: pip
-  directory: "/"
-  schedule:
-    interval: "monthly"
-  insecure-external-code-execution: allow
-  groups:
-    python-packages:
-      patterns:
-        - "*"
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    insecure-external-code-execution: allow
+    groups:
+      python-packages:
+        patterns:
+          - "*"
