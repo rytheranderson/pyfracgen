@@ -54,8 +54,12 @@ def nebula_image(
     blue, green, red = results
     fig, ax0 = plt.subplots(figsize=figaspect(blue.image_array), dpi=blue.dpi)
     fig.subplots_adjust(0, 0, 1, 1)
-    arrays = [red.image_array, green.image_array, blue.image_array]
-    final = np.dstack([arr / np.amax(arr) for arr in arrays])
+    final = np.dstack(
+        [
+            arr / np.amax(arr)
+            for arr in (red.image_array, green.image_array, blue.image_array)
+        ]
+    )
     ax0.imshow(final**gamma, origin="lower")
     if not ticks:
         plt.axis("off")
