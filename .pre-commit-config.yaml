@@ -41,4 +41,4 @@ repos:
     hooks:
     -   id: mypy
         args: [--ignore-missing-imports, --strict, --show-error-codes]
-        additional_dependencies: [gitpython, pytest, numpy]
+        additional_dependencies: [gitpython, pytest, numpy, hypothesis]
