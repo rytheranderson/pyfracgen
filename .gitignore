@@ -11,6 +11,8 @@ build/
 .tox/
 .mypy_cache/
 htmlcov
+.coverage
+.hypothesis
 
 # Temp files
 .vscode/
