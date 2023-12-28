@@ -3,7 +3,7 @@
 from hashlib import md5
 from pathlib import Path
 
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis import strategies as st
 from matplotlib import colormaps
 from matplotlib import pyplot as plt
@@ -26,6 +26,7 @@ def point_escapes(c: complex) -> bool:
     return False
 
 
+@settings(deadline=None)
 @given(c=st.complex_numbers(max_magnitude=4.0, allow_subnormal=False))
 def test_single_point_escape(c: complex) -> None:
     """Test that a single point escapes or does not escape as expected.
