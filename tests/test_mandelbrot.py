@@ -43,8 +43,8 @@ def test_mandelbrot_paint_colors_correctly(
     """
     lattice = np.zeros((1, 1), dtype=np.float64)
     _mandelbrot_paint(
-        xvals=[x],
-        yvals=[y],
+        xvals=(x,),
+        yvals=(y,),
         lattice=lattice,
         update_func=power,
         maxiter=MAXITER,
