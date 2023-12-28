@@ -8,7 +8,7 @@ from pyfracgen.iterfuncs.funcs import power
 from pyfracgen.types import Bound, IterFunc, Lattice
 
 
-@jit  # type: ignore[misc]
+@jit(nopython=True)  # type: ignore[misc]
 def _mandelbrot_paint(
     xvals: Sequence[float],
     yvals: Sequence[float],

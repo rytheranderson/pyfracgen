@@ -18,7 +18,7 @@ def construct_moves(basis: Moves3D) -> Moves3D:
     return moves
 
 
-@jit  # type: ignore[misc]
+@jit(nopython=True)  # type: ignore[misc]
 def _randomwalk_paint(
     lattice: Lattice3D,
     moves: Moves3D,

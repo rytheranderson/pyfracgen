@@ -7,7 +7,7 @@ from pyfracgen.common import CanvasBounded, Result
 from pyfracgen.types import Bound, Lattice
 
 
-@jit  # type: ignore[misc]
+@jit(nopython=True)  # type: ignore[misc]
 def _lyapunov_paint(
     string: str,
     xvals: Sequence[float],

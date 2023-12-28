@@ -11,7 +11,7 @@ from pyfracgen.mandelbrot import mandelbrot
 from pyfracgen.types import Bound, Boxes, ComplexSequence, IterFunc, Lattice
 
 
-@jit  # type: ignore[misc]
+@jit(nopython=True)  # type: ignore[misc]
 def threshold_round_array(arr: Lattice, threshold: float = 0.5) -> None:
     w, h = arr.shape
     for iy in range(w):
@@ -24,7 +24,7 @@ def threshold_round_array(arr: Lattice, threshold: float = 0.5) -> None:
             arr[iy, ix] = rounded
 
 
-@jit  # type: ignore[misc]
+@jit(nopython=True)  # type: ignore[misc]
 def round_array_preserving_sum(arr: Lattice) -> None:
     target = arr.sum()
     best = (math.inf, 0.5)
@@ -38,7 +38,7 @@ def round_array_preserving_sum(arr: Lattice) -> None:
     threshold_round_array(arr, best[-1])
 
 
-@jit  # type: ignore[misc]
+@jit(nopython=True)  # type: ignore[misc]
 def _compute_cvals(
     ncvals: int,
     bounds: tuple[Bound, Bound],
@@ -70,7 +70,7 @@ def _compute_cvals(
     return np.array(cvals)
 
 
-@jit  # type: ignore[misc]
+@jit(nopython=True)  # type: ignore[misc]
 def _buddhabrot_paint(
     bounds: tuple[Bound, Bound],
     lattice: Lattice,
