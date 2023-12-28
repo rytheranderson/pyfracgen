@@ -3,6 +3,8 @@
 from hashlib import md5
 from pathlib import Path
 
+import numpy as np
+import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 from matplotlib import colormaps
@@ -10,7 +12,7 @@ from matplotlib import pyplot as plt
 
 from pyfracgen.images.images import image
 from pyfracgen.iterfuncs.funcs import power
-from pyfracgen.mandelbrot import Mandelbrot, mandelbrot
+from pyfracgen.mandelbrot import Mandelbrot, _mandelbrot_paint, mandelbrot
 
 MAXITER = 1000
 
@@ -24,6 +26,32 @@ def point_escapes(c: complex) -> bool:
         if abs(z) > 2:
             return True
     return False
+
+
+@pytest.mark.parametrize(
+    "x, y, expected_color", [(3, 0, 0), (2, 0, 1), (1, 0, 2), (0.5, 0, 4)]
+)
+def test_mandelbrot_paint_colors_correctly(
+    x: float, y: float, expected_color: float
+) -> None:
+    """Test _mandelbrot_paint assigns the expected color for a given point.
+
+    Args:
+        x: The point x-value (real part).
+        y: The point y-value (imaginary part).
+        expected_color: The expected color for the point (x, y).
+    """
+    lattice = np.zeros((1, 1), dtype=np.float64)
+    _mandelbrot_paint(
+        xvals=[x],
+        yvals=[y],
+        lattice=lattice,
+        update_func=power,
+        maxiter=MAXITER,
+        horizon=2,
+        log_smooth=False,
+    )
+    assert lattice[0, 0] == expected_color
 
 
 @settings(deadline=None)
