@@ -6,6 +6,6 @@ updates:
       interval: "monthly"
     insecure-external-code-execution: allow
     groups:
-      python-packages:
+      all-dependencies:
         patterns:
           - "*"
