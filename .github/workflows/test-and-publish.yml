@@ -29,7 +29,7 @@ jobs:
     - name: Install library
       run: poetry install --no-interaction
     - name: Test with tox
-      run: poetry run tox -vv
+      run: poetry run tox
     - name: Test with tox jit disabled
       env: 
         NUMBA_DISABLE_JIT: 1
