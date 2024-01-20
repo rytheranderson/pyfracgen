@@ -1,6 +1,5 @@
 """Tests for the julia module."""
 
-from hashlib import md5
 from pathlib import Path
 
 import numpy as np
@@ -13,6 +12,7 @@ from matplotlib import pyplot as plt
 from pyfracgen.images.images import image
 from pyfracgen.iterfuncs.funcs import power
 from pyfracgen.julia import Julia, _julia_paint, julia
+from tests.assertions import assert_pngs_equal
 
 MAXITER = 1000
 
@@ -108,10 +108,6 @@ def test_integration_julia_image_creation(
         maxiter=MAXITER,
     )
     image(next(res), cmap=colormaps["binary"])
-    result_path = Path(".") / "julia_integration_answer.png"
+    result_path = tmp_path / "julia_integration_answer.png"
     plt.savefig(result_path)
-    with open(result_path, "rb") as res_file:
-        result_bytes = res_file.read()
-    with open(julia_integration_answer, "rb") as answer_file:
-        answer_bytes = answer_file.read()
-    assert md5(result_bytes).digest() == md5(answer_bytes).digest()
+    assert_pngs_equal(result_path, julia_integration_answer)
