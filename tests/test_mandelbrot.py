@@ -85,7 +85,7 @@ def test_integration_mandelbrot_image_creation(
         tmp_path: Temporary path where the result image is saved.
     """
     res = mandelbrot(
-        (-2.2, 0.5), (-1, 1), power, width=4, height=3, dpi=100, maxiter=MAXITER
+        (-2.2, 0.5), (-1, 1), power, width=4, height=3, dpi=50, maxiter=MAXITER
     )
     image(res, cmap=colormaps["binary"])
     result_path = tmp_path / "mandelbrot_integration_answer.png"
