@@ -14,6 +14,7 @@ to install from GH, probably do so using `poetry`).
 ### Git
 ```bash
 git clone https://github.com/rytheranderson/pyfracgen.git
+cd pyfracgen
 poetry install
 ```
 
