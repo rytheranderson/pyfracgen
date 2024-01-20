@@ -12,29 +12,27 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
     - name: Install Poetry
       uses: snok/install-poetry@v1
       with:
           virtualenvs-create: true
           virtualenvs-in-project: true
-    - name: Load cached venv
-      id: cached-poetry-deps
-      uses: actions/cache@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      id: setup-python
+      uses: actions/setup-python@v5
       with:
-        path: |
-          .venv
-          .tox
-        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+        python-version: ${{ matrix.python-version }}
+        cache: "poetry"
     - name: Install dependencies
-      if: steps.cached-poetry-deps.outputs.cache-hit != 'true'
+      if: steps.setup-python.outputs.cache-hit != 'true'
       run: poetry install --no-interaction --no-root
     - name: Install library
       run: poetry install --no-interaction
     - name: Test with tox
+      run: poetry run tox
+    - name: Test with tox jit disabled
+      env: 
+        NUMBA_DISABLE_JIT: 1
       run: poetry run tox
     
   build-and-publish:
@@ -49,7 +47,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.x"
     - name: Install Poetry
