@@ -59,7 +59,8 @@ def test_mandelbrot_paint_colors_correctly(
 def test_single_point_escape(c: complex) -> None:
     """Test that a single point escapes or does not escape as expected.
 
-    TODO: Add escape criteria and citation.
+    If any Q(z) > 2, where Q is the orbit of z, then z escapes.
+    https://en.wikipedia.org/wiki/Mandelbrot_set#Basic_properties
 
     Args:
         c: The single point to test.
