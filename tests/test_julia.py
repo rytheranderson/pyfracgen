@@ -87,6 +87,26 @@ def test_single_point_escape(z: complex, c: complex) -> None:
         assert color == 0.0
 
 
+@pytest.mark.parametrize("cvals", [[], [-0.8 + 0.156j], [-0.8 + 0.156j, -0.8 + 0.157j]])
+def test_julia_yields_expected_number_results(cvals: list[complex]) -> None:
+    """Test the julia function yields the expected number of results.
+
+    Args:
+        cvals: The numbers passed to the julia function.
+    """
+    res = julia(
+        cvals,
+        (-1.6, 1.6),
+        (-0.9, 0.9),
+        power,
+        width=4,
+        height=3,
+        dpi=10,
+        maxiter=MAXITER,
+    )
+    assert sum(1 for _ in res) == len(cvals)
+
+
 def test_integration_julia_image_creation(
     julia_integration_answer: Path,
     tmp_path: Path,
