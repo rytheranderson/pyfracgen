@@ -47,6 +47,7 @@ def test_julia_paint_colors_correctly(
     Args:
         x: The point x-value (real part).
         y: The point y-value (imaginary part).
+        c: The c-value for the Julia set.
         expected_color: The expected color for the point (x, y).
     """
     lattice = np.zeros((1, 1), dtype=np.float64)
@@ -72,10 +73,11 @@ def test_single_point_escape(z: complex, c: complex) -> None:
     """Test that a single point escapes or does not escape as expected.
 
     If any Q(z) > max(2, abs(c)), where Q is the orbit of z, then z escapes.
-    https://www.marksmath.org/classes/Spring2019ComplexDynamics/text/section-filled_julia_set.html  # noqa: E501
+    https://www.marksmath.org/classes/Spring2019ComplexDynamics/text/section-filled_julia_set.html
 
     Args:
-        c: The single point to test.
+        z: The single point to test escape for.
+        c: The c-value for the Julia set.
     """
     res = Julia(1, 1, 1, (z.real, z.real), (z.imag, z.imag))
     res.paint(c, power, MAXITER, 2.0**40, False)

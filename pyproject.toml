@@ -25,37 +25,33 @@ numpy = "^1.26.2"
 nptyping = "^2.5.0"
 
 [tool.poetry.group.dev.dependencies]
-black = ">=23.3,<25.0"
-cruft = "^2.15.0"
-flake8 = ">=6.1,<8.0"
-flake8-docstrings = "^1.7.0"
-flake8-bugbear = ">=23.5.9,<25.0.0"
 hypothesis = "^6.75.6"
-isort = "^5.12.0"
 mypy = "^1.7.1"
 pre-commit = "^3.3.2"
 pytest = ">=7.3.1,<9.0.0"
 pytest-cov = "^4.1.0"
 pytest-mock = "^3.10.0"
+ruff = "^0.3.4"
 tbump = "^6.10.0"
 tox = "^3.24"
 tox-gh-actions = "^2.8"
 tox-poetry-installer = "^0.10.0"
 
-[tool.black]
-line-length = 88
-experimental_string_processing = true
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | build
-  | dist
-)/
-'''
+[tool.ruff.lint]
+# B = flake8-bugbear
+# C9 = mccabe complexity
+# E = pycodestyle error
+# F = pyflakes
+# N = pep8-naming
+# PL = pylint
+# Q = flake8-quotes
+# RUF = ruf
+# W = pycodestyle warning
+select = ["B", "C9", "D", "E", "F", "N", "PL", "Q", "RUF", "W"]
+ignore = ["D10", "PLR0913"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.tbump.version]
 current = "0.2.0"

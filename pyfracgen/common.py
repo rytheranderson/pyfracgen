@@ -1,4 +1,5 @@
 """Utility objects and methods used across the library."""
+
 from __future__ import annotations
 
 import pickle

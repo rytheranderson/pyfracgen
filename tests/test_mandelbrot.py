@@ -18,12 +18,13 @@ MAXITER = 1000
 
 
 def point_escapes(c: complex) -> bool:
-    if abs(c) > 2:
+    threshold = 2
+    if abs(c) > threshold:
         return True
     z = c
     for _ in range(MAXITER):
         z = power(z, c)
-        if abs(z) > 2:
+        if abs(z) > threshold:
             return True
     return False
 
