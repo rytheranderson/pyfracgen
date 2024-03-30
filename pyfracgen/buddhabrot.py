@@ -92,9 +92,9 @@ def _buddhabrot_paint(
                 sequence.extend(trial_sequence)
                 break
             z = update_func(z, c)
-        for c in sequence:
-            indx = int((c.real - xmin) / (xmax - xmin) * width)
-            indy = int((c.imag - ymin) / (ymax - ymin) * height)
+        for sval in sequence:
+            indx = int((sval.real - xmin) / (xmax - xmin) * width)
+            indy = int((sval.imag - ymin) / (ymax - ymin) * height)
             if (indx < 0 or indx >= width) or (indy < 0 or indy >= height):
                 continue
             lattice[indy, indx] += 1

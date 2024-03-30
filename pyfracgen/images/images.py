@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Sequence
 
-import matplotlib.animation as animation
+from matplotlib import animation
 import numpy as np
 from matplotlib import colormaps, colors
 from matplotlib import pyplot as plt
@@ -78,13 +78,13 @@ def markus_lyapunov_image(
     fig, ax0 = plt.subplots(figsize=figaspect(res.image_array), dpi=res.dpi)
     fig.subplots_adjust(0, 0, 1, 1)
     ax0.imshow(
-        np.ma.masked_where(res.image_array > 0.0, res.image_array),  # type: ignore[no-untyped-call] # noqa: E501
+        np.ma.masked_where(res.image_array > 0.0, res.image_array),  # type: ignore[no-untyped-call]
         cmap=cmap_neg,
         origin="lower",
         norm=colors.PowerNorm(gammas[0]),
     )
     ax0.imshow(
-        np.ma.masked_where(res.image_array < 0.0, res.image_array),  # type: ignore[no-untyped-call] # noqa: E501
+        np.ma.masked_where(res.image_array < 0.0, res.image_array),  # type: ignore[no-untyped-call]
         cmap=cmap_pos,
         origin="lower",
         norm=colors.PowerNorm(gammas[1]),
