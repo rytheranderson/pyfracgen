@@ -10,7 +10,8 @@ build/
 # Testing
 .tox/
 .mypy_cache/
-htmlcov
+.pytest_cache/
+.ruff_cache/
 .coverage
 .hypothesis
 
