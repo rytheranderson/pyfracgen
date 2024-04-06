@@ -9,7 +9,7 @@ from typing import Any
 
 import numpy as np
 
-from pyfracgen.types import Bound, Lattice, Lattice3D
+from pyfracgen.types import Bound, Lattice
 
 RESULT_DEFAULT_SAVE = Path("save.pickle")
 
@@ -46,14 +46,6 @@ class Canvas:
 
     def paint(self, *args: Any, **kwargs: Any) -> None:
         raise NotImplementedError
-
-
-class Canvas3D(Canvas):
-    def __init__(self, width: int, height: int, depth: int, dpi: int) -> None:
-        super().__init__(width, height, dpi)
-        self.lattice: Lattice3D = np.dstack(
-            [np.zeros(self.lattice.shape) for _ in range(depth)]
-        )
 
 
 class CanvasBounded(Canvas):

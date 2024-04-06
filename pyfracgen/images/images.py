@@ -96,31 +96,6 @@ def markus_lyapunov_image(
     return fig, ax0
 
 
-def randomwalk_image(
-    res: Result,
-    cmap: colors.Colormap = DEFAULT_COLORMAP,
-    ticks: bool = False,
-    gamma: float = 0.3,
-    alpha_scale: float = 1.0,
-) -> tuple[Figure, Axes]:
-    fig, ax0 = plt.subplots(figsize=figaspect(res.image_array[:, :, 0]), dpi=res.dpi)
-    fig.subplots_adjust(0, 0, 1, 1)
-    max_ind = float(res.image_array.shape[-1] + 1)
-    for i in range(res.image_array.shape[-1]):
-        im = res.image_array[..., i]
-        im = np.ma.masked_where(im == 0, im)  # type: ignore[no-untyped-call]
-        alpha = alpha_scale * (1 - (i + 1) / max_ind)
-        norm = colors.PowerNorm(gamma)
-        ax0.imshow(
-            im, origin="lower", alpha=alpha, cmap=cmap, norm=norm, interpolation=None
-        )
-    if not ticks:
-        plt.axis(ticks)
-    fs = plt.gcf()
-    fs.set_size_inches(res.width_inches, res.height_inches)
-    return fig, ax0
-
-
 def save_animation(
     series: Sequence[Result],
     cmap: colors.Colormap = DEFAULT_COLORMAP,
