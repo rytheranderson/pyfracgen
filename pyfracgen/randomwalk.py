@@ -9,18 +9,6 @@ from pyfracgen.common import Result, Canvas
 from pyfracgen.types import Moves, Lattice
 
 
-def construct_moves(*vectors: tuple[int, int]) -> Moves:
-    basis = []
-    for vec in vectors:
-        arr = np.array(vec)
-        basis.extend([arr, -1 * arr])
-    nonnull = list(
-        filter(lambda x: np.any(x), (b0 + b1 for b0, b1 in itt.combinations(basis, 2)))
-    )
-    moves: Moves = np.unique(nonnull, axis=0)
-    return moves
-
-
 @jit(nopython=True)  # type: ignore[misc]
 def _randomwalk_paint(
     lattice: Lattice,
@@ -38,17 +26,18 @@ def _randomwalk_paint(
 
 
 class RandomWalk(Canvas):
-    def paint(self, moves: Canvas, niter: int) -> None:
-        _randomwalk_paint(self.lattice, moves, niter)
+    moves = np.array(list(itt.product([1, -1, 0], [1, -1, 0])))
+
+    def paint(self, niter: int) -> None:
+        _randomwalk_paint(self.lattice, self.moves, niter)
 
 
 def randomwalk(
-    moves: Moves,
     niter: int,
     width: int = 5,
     height: int = 4,
     dpi: int = 300,
 ) -> Result:
     canvas = RandomWalk(width, height, dpi)
-    canvas.paint(moves, niter)
+    canvas.paint(niter)
     return canvas.result

@@ -5,7 +5,7 @@ from .iterfuncs import funcs
 from .julia import julia
 from .lyapunov import lyapunov
 from .mandelbrot import mandelbrot
-from .randomwalk import construct_moves, randomwalk
+from .randomwalk import randomwalk
 
 __all__ = [
     "buddhabrot",
@@ -15,7 +15,6 @@ __all__ = [
     "lyapunov",
     "mandelbrot",
     "randomwalk",
-    "construct_moves",
     "Result",
     "Canvas",
     "funcs",
