@@ -103,10 +103,8 @@ def lyapunov_example() -> None:
 
 def randomwalk_example() -> None:
     start_time = time.time()
-    basis = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    moves = pf.construct_moves(basis)
-    res = pf.randomwalk(moves, niter=5000000, width=4, height=3, depth=10, dpi=300)
-    pf.images.randomwalk_image(res, cmap=colormaps["gist_yarg"], gamma=1.0)
+    res = pf.randomwalk(niter=1000000, width=4, height=3, dpi=300)
+    pf.images.image(res, cmap=colormaps["gnuplot"], gamma=1.0)
     plt.savefig("example_images/randomwalk_ex.png")
     print(f"calculation took {round((time.time() - start_time), 2)} seconds")
 

@@ -106,10 +106,9 @@ plt.savefig("example_images/lyapunov_ex.png")
 Image produced with this code:
 
 ```python
-basis = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-moves = pf.construct_moves(basis)
-res = pf.randomwalk(moves, niter=5000000, width=4, height=3, depth=10, dpi=300)
-pf.images.randomwalk_image(res, cmap=colormaps["gist_yarg"], gamma=1.0)
+moves = pf.construct_moves((1, 0), (0, 1))
+res = pf.randomwalk(moves, niter=1000000, width=4, height=3, dpi=300)
+pf.images.image(res, cmap=colormaps["gnuplot"], gamma=1.0)
 plt.savefig("example_images/randomwalk_ex.png")
 ```
 
@@ -140,13 +139,12 @@ plt.savefig("example_images/buddhabrot_ex.png")
 * Julia
 * Buddhabrot
 * Markus-Lyapunov
-* 3D random walks
+* 2D random walks
 
 ## Image Creation
 * Function `image` wrapping `matplotlib.pyplot.imshow`
 * Function `nebula_image` for Buddhabrot ["nebula"](https://en.wikipedia.org/wiki/Buddhabrot#Nuances) coloration
 * Function `markus_lyapunov_image` for [Markus-Lyapunov](https://doi.org/10.1016/0097-8493(89)90019-8) coloration
-* Function `randomwalk_image` for coloring 3D random walks with depth
 * Function `save_animation` for animating a sequence of results
 
 ## More than Quadratic Polynomials
